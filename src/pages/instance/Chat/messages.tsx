@@ -1,6 +1,7 @@
 import { DropdownMenu, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { ArrowRightIcon, ChevronDownIcon, SparkleIcon, User, ZapIcon } from "lucide-react";
 import { RefObject, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
@@ -139,6 +140,17 @@ const getMessageText = (messageObj: any): string => {
 
 // Component to render different message types based on messageType
 const MessageContent = ({ message }: { message: Message }) => {
+  const { t } = useTranslation();
+
+  // Early return for invalid messages
+  if (!message?.message) {
+    return (
+      <div className="text-xs text-muted-foreground bg-muted p-2 rounded max-w-xs">
+        {t("chat.message.invalidOrUnsupported")}
+      </div>
+    );
+  }
+
   const messageType = message.messageType as string;
 
   switch (messageType) {
@@ -503,14 +515,14 @@ function Messages({ textareaRef, handleTextareaChange, textareaHeight, lastMessa
 
   // Group messages by date
   const groupedMessages = useMemo(() => {
-    if (!allMessages) return [];
+  if (!allMessages) return [];
 
-    // Sort messages by timestamp first
-    const sortedMessages = [...allMessages].sort((a, b) => {
-      const aTime = getMessageTimestamp(a).getTime();
-      const bTime = getMessageTimestamp(b).getTime();
-      return aTime - bTime;
-    });
+  // Sort messages by timestamp first
+  const sortedMessages = [...allMessages].sort((a, b) => {
+    const aTime = getMessageTimestamp(a).getTime();
+    const bTime = getMessageTimestamp(b).getTime();
+    return aTime - bTime;
+  });
 
     const grouped: { date: string; messages: Message[] }[] = [];
     let currentDate = "";

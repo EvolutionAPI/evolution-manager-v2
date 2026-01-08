@@ -44,6 +44,11 @@
       "french": "Français"
     }
   },
+  "chat": {
+    "message": {
+      "invalidOrUnsupported": "Message invalide ou non pris en charge"
+    }
+  },
   "sidebar": {
     "dashboard": "Vue d'ensemble",
     "configurations": "Configurations",

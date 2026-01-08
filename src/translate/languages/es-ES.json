@@ -45,6 +45,11 @@
       "french": "Francés"
     }
   },
+  "chat": {
+    "message": {
+      "invalidOrUnsupported": "Mensaje inválido o no soportado"
+    }
+  },
   "sidebar": {
     "dashboard": "Visión General",
     "configurations": "Configuraciones",
