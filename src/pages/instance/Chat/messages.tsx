@@ -515,14 +515,14 @@ function Messages({ textareaRef, handleTextareaChange, textareaHeight, lastMessa
 
   // Group messages by date
   const groupedMessages = useMemo(() => {
-  if (!allMessages) return [];
+    if (!allMessages) return [];
 
-  // Sort messages by timestamp first
-  const sortedMessages = [...allMessages].sort((a, b) => {
-    const aTime = getMessageTimestamp(a).getTime();
-    const bTime = getMessageTimestamp(b).getTime();
-    return aTime - bTime;
-  });
+    // Sort messages by timestamp first
+    const sortedMessages = [...allMessages].sort((a, b) => {
+      const aTime = getMessageTimestamp(a).getTime();
+      const bTime = getMessageTimestamp(b).getTime();
+      return aTime - bTime;
+    });
 
     const grouped: { date: string; messages: Message[] }[] = [];
     let currentDate = "";
