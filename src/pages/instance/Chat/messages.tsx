@@ -34,8 +34,7 @@ type MessagesProps = {
 };
 
 // Utility function to format dates like WhatsApp
-const formatDateSeparator = (date: Date): string => {
-  const { t } = useTranslation();
+const formatDateSeparator = (date: Date, t: any): string => {
   const today = new Date();
   const yesterday = new Date(today);
   yesterday.setDate(yesterday.getDate() - 1);
@@ -294,6 +293,7 @@ const MessageContent = ({ message }: { message: Message }) => {
 };
 
 function Messages({ textareaRef, handleTextareaChange, textareaHeight, lastMessageRef, scrollToBottom }: MessagesProps) {
+  const { t } = useTranslation();
   const { instance } = useInstance();
   const [messageText, setMessageText] = useState("");
   const [isSending, setIsSending] = useState(false);
@@ -528,7 +528,7 @@ function Messages({ textareaRef, handleTextareaChange, textareaHeight, lastMessa
       if (dateString !== currentDate) {
         if (currentGroup.length > 0) {
           grouped.push({
-            date: formatDateSeparator(new Date(currentDate)),
+            date: formatDateSeparator(new Date(currentDate), t),
             messages: currentGroup,
           });
         }
@@ -541,7 +541,7 @@ function Messages({ textareaRef, handleTextareaChange, textareaHeight, lastMessa
 
     if (currentGroup.length > 0) {
       grouped.push({
-        date: formatDateSeparator(new Date(currentDate)),
+        date: formatDateSeparator(new Date(currentDate), t),
         messages: currentGroup,
       });
     }
@@ -656,7 +656,7 @@ function Messages({ textareaRef, handleTextareaChange, textareaHeight, lastMessa
         <div className="flex items-center rounded-3xl border border-border bg-background px-2 py-1">
           {instance && <MediaOptions instance={instance} setSelectedMedia={setSelectedMedia} />}
           <Textarea
-            placeholder="Enviar mensagem..."
+            placeholder={t("chat.message.placeholder")}
             name="message"
             id="message"
             rows={1}
@@ -670,7 +670,7 @@ function Messages({ textareaRef, handleTextareaChange, textareaHeight, lastMessa
           />
           <Button type="button" size="icon" onClick={sendMessage} disabled={(!messageText.trim() && !selectedMedia) || isSending} className="rounded-full p-2 disabled:opacity-50">
             <ArrowRightIcon className="h-6 w-6" />
-            <span className="sr-only">Enviar</span>
+            <span className="sr-only">{t("chat.message.send")}</span>
           </Button>
         </div>
       </div>
