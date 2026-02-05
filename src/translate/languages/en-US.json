@@ -79,7 +79,8 @@
       "placeholder": "Type the message",
       "options": "Options",
       "reply": "Forward",
-      "delete": "Delete"
+      "delete": "Delete",
+      "send": "Send"
     },
     "newChat": {
       "title": "New Chat",

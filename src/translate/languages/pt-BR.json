@@ -46,95 +46,96 @@
     }
   },
   "chat": {
-  "title": "Chat",
-  "contacts": "Contatos",
-  "contact": "Contato",
-  "contactCard": "Cartão de contato",
-  "recent": "Recente",
-  "noInstance": "Nenhuma instância selecionada",
-  "messageType": {
-    "location": {
-      "title": "Localização",
-      "viewOnMaps": "Ver no Maps"
-    },
-    "image": {
-      "notFound": "Não foi possível carregar a imagem"
-    },
-    "video": {
-      "notFound": "Não foi possível carregar o vídeo"
-    },
-    "audio": {
-      "notFound": "Não foi possível carregar o áudio",
-      "notSupported": "Seu navegador não suporta arquivos de áudio"
-    },
-    "unknownMessage": "Tipo de mensagem desconhecido"
-  },
-  "groups": "Grupos",
-  "date": {
-    "today": "Hoje",
-    "yesterday": "Ontem",
-    "location": "pt-BR"
-  },
-  "message": {
-    "placeholder": "Digite a mensagem",
-    "options": "Opções",
-    "reply": "Encaminhar",
-    "delete": "Excluir"
-  },
-  "newChat": {
-    "title": "Novo chat",
-    "description": "Inicie um novo chat",
+    "title": "Chat",
+    "contacts": "Contatos",
     "contact": "Contato",
-    "placeholder": "Digite a mensagem",
-    "submit": "Enviar"
-  },
-  "buttons": {
-    "preview": {
-      "title": "Pré-visualização",
-      "buttonPlaceholder": "Pré-visualização"
+    "contactCard": "Cartão de contato",
+    "recent": "Recente",
+    "noInstance": "Nenhuma instância selecionada",
+    "messageType": {
+      "location": {
+        "title": "Localização",
+        "viewOnMaps": "Ver no Maps"
+      },
+      "image": {
+        "notFound": "Não foi possível carregar a imagem"
+      },
+      "video": {
+        "notFound": "Não foi possível carregar o vídeo"
+      },
+      "audio": {
+        "notFound": "Não foi possível carregar o áudio",
+        "notSupported": "Seu navegador não suporta arquivos de áudio"
+      },
+      "unknownMessage": "Tipo de mensagem desconhecido"
     },
-    "form": {
-      "validation": {
-        "titleRequired": "Título obrigatório",
-        "descriptionRequired": "Descrição obrigatória",
-        "buttonTypeRequired": "Tipo de botão obrigatório",
-        "buttonTextRequired": "Texto do botão obrigatório",
-        "minimumOneButton": "No mínimo um botão",
-        "replyIdRequired": "ID de resposta obrigatório",
-        "copyTextRequired": "Texto de cópia obrigatório",
-        "urlRequired": "URL obrigatória",
-        "phoneRequired": "Telefone obrigatório"
+    "groups": "Grupos",
+    "date": {
+      "today": "Hoje",
+      "yesterday": "Ontem",
+      "location": "pt-BR"
+    },
+    "message": {
+      "placeholder": "Digite a mensagem",
+      "options": "Opções",
+      "reply": "Encaminhar",
+      "delete": "Excluir",
+      "send": "Enviar"
+    },
+    "newChat": {
+      "title": "Novo chat",
+      "description": "Inicie um novo chat",
+      "contact": "Contato",
+      "placeholder": "Digite a mensagem",
+      "submit": "Enviar"
+    },
+    "buttons": {
+      "preview": {
+        "title": "Pré-visualização",
+        "buttonPlaceholder": "Pré-visualização"
+      },
+      "form": {
+        "validation": {
+          "titleRequired": "Título obrigatório",
+          "descriptionRequired": "Descrição obrigatória",
+          "buttonTypeRequired": "Tipo de botão obrigatório",
+          "buttonTextRequired": "Texto do botão obrigatório",
+          "minimumOneButton": "No mínimo um botão",
+          "replyIdRequired": "ID de resposta obrigatório",
+          "copyTextRequired": "Texto de cópia obrigatório",
+          "urlRequired": "URL obrigatória",
+          "phoneRequired": "Telefone obrigatório"
+        }
+      }
+    },
+    "toast": {
+      "error": "Erro",
+      "recordingError": "Erro de gravação",
+      "sendError": "Erro ao enviar"
+    },
+    "window": {
+      "expired": "Expirado",
+      "expiresIn": "Expira em"
+    },
+    "media": {
+      "missingData": "Faltam dados base64 e/ou a URL da mídia",
+      "attach": "Anexar arquivo",
+      "document": "Documento",
+      "photosAndVideos": "Fotos e vídeos",
+      "errors": {
+        "audioSize": "O tamanho do áudio deve ser menor que 16 MB",
+        "imageSize": "O tamanho da imagem deve ser menor que 5 MB",
+        "videoSize": "O tamanho do vídeo deve ser menor que 16 MB",
+        "documentSize": "O tamanho do documento deve ser menor que 100 MB",
+        "unsupportedType": "Tipo de arquivo não compatível"
+      },
+      "selectedMedia": {
+        "imageAlt": "Imagem selecionada",
+        "file": "Arquivo",
+        "selectedFile": "Arquivo selecionado"
       }
     }
   },
-  "toast": {
-    "error": "Erro",
-    "recordingError": "Erro de gravação",
-    "sendError": "Erro ao enviar"
-  },
-  "window": {
-    "expired": "Expirado",
-    "expiresIn": "Expira em"
-  },
-  "media": {
-    "missingData": "Faltam dados base64 e/ou a URL da mídia",
-    "attach": "Anexar arquivo",
-    "document": "Documento",
-    "photosAndVideos": "Fotos e vídeos",
-    "errors": {
-      "audioSize": "O tamanho do áudio deve ser menor que 16 MB",
-      "imageSize": "O tamanho da imagem deve ser menor que 5 MB",
-      "videoSize": "O tamanho do vídeo deve ser menor que 16 MB",
-      "documentSize": "O tamanho do documento deve ser menor que 100 MB",
-      "unsupportedType": "Tipo de arquivo não compatível"
-    },
-    "selectedMedia": {
-      "imageAlt": "Imagem selecionada",
-      "file": "Arquivo",
-      "selectedFile": "Arquivo selecionado"
-    }
-  }
-},
   "sidebar": {
     "dashboard": "Visão Geral",
     "chat": "Chat",

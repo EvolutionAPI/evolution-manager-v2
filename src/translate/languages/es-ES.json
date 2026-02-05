@@ -79,7 +79,8 @@
       "placeholder": "Escriba el mensaje",
       "options": "Opciones",
       "reply": "Reenviar",
-      "delete": "Eliminar"
+      "delete": "Eliminar",
+      "send": "Enviar"
     },
     "newChat": {
       "title": "Nuevo Chat",
@@ -110,7 +111,7 @@
     "toast": {
       "error": "Error",
       "recordingError": "Error de grabación",
-      "sendError": "Enviar error"
+      "sendError": "Error al enviar"
     },
     "window": {
       "expired": "Expirado",
