@@ -156,7 +156,7 @@ const MessageContent = ({ message }: { message: Message }) => {
               <span className="font-medium">{t("chat.contact")}</span>
             </div>
             {contactMsg.displayName && <p className="text-sm font-medium">{contactMsg.displayName}</p>}
-            {contactMsg.vcard && <p className="text-xs text-muted-foreground">{t("chat.contactCart")}</p>}
+            {contactMsg.vcard && <p className="text-xs text-muted-foreground">{t("chat.contactCard")}</p>}
           </div>
         );
       }
