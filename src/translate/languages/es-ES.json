@@ -46,7 +46,78 @@
     }
   },
   "chat": {
+    "title": "Chat",
+    "contacts": "Contactos",
+    "contact": "Contacto",
+    "contactCard": "Tarjeta de contacto",
+    "recent": "Reciente",
+    "noInstance": "No hay ninguna instancia seleccionada",
+    "messageType": {
+      "location": {
+        "title": "Localización",
+        "viewOnMaps": "Ver en Maps"
+      },
+      "image": {
+        "notFound": "No fue posible cargar la imagen"
+      },
+      "video": {
+        "notFound": "No fue posible cargar el vídeo"
+      },
+      "audio": {
+        "notFound": "No fue posible cargar el audio",
+        "notSupported": "Tu navegador no soporta archivos de audio"
+      },
+      "unknownMessage": "Tipo de mensaje desconocido"
+    },
+    "groups": "Grupos",
+    "date": {
+      "today": "Hoy",
+      "yesterday": "Ayer",
+      "location": "es-MX"
+    },
+    "message": {
+      "placeholder": "Escriba el mensaje",
+      "options": "Opciones",
+      "reply": "Reenviar",
+      "delete": "Eliminar"
+    },
+    "newChat": {
+      "title": "Nuevo Chat",
+      "description": "Inicia un nuevo chat",
+      "contact": "Contacto",
+      "placeholder": "Escriba el mensaje",
+      "submit": "Enviar"
+    },
+    "buttons": {
+      "preview": {
+        "title": "Previo",
+        "buttonPlaceholder": "Previo"
+      },
+      "form": {
+        "validation": {
+          "titleRequired": "Título requerido",
+          "descriptionRequired": "Descripción requerida",
+          "buttonTypeRequired": "Tipo de botón requerido",
+          "buttonTextRequired": "Texto de botón requerido",
+          "minimumOneButton": "Mínimo un botón",
+          "replyIdRequired": "ID de respuesta requerido",
+          "copyTextRequired": "Copia de texto requerida",
+          "urlRequired": "URL requerida",
+          "phoneRequired": "Teléfono requerido"
+        }
+      }
+    },
+    "toast": {
+      "error": "Error",
+      "recordingError": "Error de grabación",
+      "sendError": "Enviar error"
+    },
+    "window": {
+      "expired": "Expirado",
+      "expiresIn": "Expira en"
+    },
     "media": {
+      "missingData": "Faltan datos base64 y/o el media URL",
       "attach": "Adjuntar archivo",
       "document": "Documento",
       "photosAndVideos": "Fotos y Vídeos",
@@ -66,6 +137,7 @@
   },
   "sidebar": {
     "dashboard": "Dashboard",
+    "chat": "Chat",
     "configurations": "Configuraciones",
     "settings": "Ajustes",
     "proxy": "Proxy",

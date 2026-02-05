@@ -46,7 +46,78 @@
     }
   },
   "chat": {
+    "title": "Chat",
+    "contacts": "Contacts",
+    "contact": "Contact",
+    "contactCard": "Contact card",
+    "recent": "Recent",
+    "noInstance": "No instance selected",
+    "messageType": {
+      "location": {
+        "title": "Location",
+        "viewOnMaps": "View on Maps"
+      },
+      "image": {
+        "notFound": "Unable to load the image"
+      },
+      "video": {
+        "notFound": "Unable to load the video"
+      },
+      "audio": {
+        "notFound": "Unable to load the audio",
+        "notSupported": "Your browser does not support audio files"
+      },
+      "unknownMessage": "Unknown message type"
+    },
+    "groups": "Groups",
+    "date": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "location": "en-US"
+    },
+    "message": {
+      "placeholder": "Type the message",
+      "options": "Options",
+      "reply": "Forward",
+      "delete": "Delete"
+    },
+    "newChat": {
+      "title": "New Chat",
+      "description": "Start a new chat",
+      "contact": "Contact",
+      "placeholder": "Type the message",
+      "submit": "Send"
+    },
+    "buttons": {
+      "preview": {
+        "title": "Preview",
+        "buttonPlaceholder": "Preview"
+      },
+      "form": {
+        "validation": {
+          "titleRequired": "Title required",
+          "descriptionRequired": "Description required",
+          "buttonTypeRequired": "Button type required",
+          "buttonTextRequired": "Button text required",
+          "minimumOneButton": "At least one button",
+          "replyIdRequired": "Reply ID required",
+          "copyTextRequired": "Copy text required",
+          "urlRequired": "URL required",
+          "phoneRequired": "Phone number required"
+        }
+      }
+    },
+    "toast": {
+      "error": "Error",
+      "recordingError": "Recording error",
+      "sendError": "Send error"
+    },
+    "window": {
+      "expired": "Expired",
+      "expiresIn": "Expires in"
+    },
     "media": {
+      "missingData": "Missing base64 data and/or media URL",
       "attach": "Attach file",
       "document": "Document",
       "photosAndVideos": "Photos and Videos",

@@ -41,11 +41,103 @@
       "label": "Langue",
       "english": "Anglais",
       "portuguese": "Portugais",
+      "spanish": "Espagnol",
       "french": "Français"
+    }
+  },
+  "chat": {
+    "title": "Chat",
+    "contacts": "Contacts",
+    "contact": "Contact",
+    "contactCard": "Carte de contact",
+    "recent": "Récent",
+    "noInstance": "Aucune instance sélectionnée",
+    "messageType": {
+      "location": {
+        "title": "Localisation",
+        "viewOnMaps": "Voir sur Maps"
+      },
+      "image": {
+        "notFound": "Impossible de charger l’image"
+      },
+      "video": {
+        "notFound": "Impossible de charger la vidéo"
+      },
+      "audio": {
+        "notFound": "Impossible de charger l’audio",
+        "notSupported": "Votre navigateur ne prend pas en charge les fichiers audio"
+      },
+      "unknownMessage": "Type de message inconnu"
+    },
+    "groups": "Groupes",
+    "date": {
+      "today": "Aujourd’hui",
+      "yesterday": "Hier",
+      "location": "fr-FR"
+    },
+    "message": {
+      "placeholder": "Saisissez le message",
+      "options": "Options",
+      "reply": "Transférer",
+      "delete": "Supprimer"
+    },
+    "newChat": {
+      "title": "Nouveau chat",
+      "description": "Démarrer un nouveau chat",
+      "contact": "Contact",
+      "placeholder": "Saisissez le message",
+      "submit": "Envoyer"
+    },
+    "buttons": {
+      "preview": {
+        "title": "Aperçu",
+        "buttonPlaceholder": "Aperçu"
+      },
+      "form": {
+        "validation": {
+          "titleRequired": "Titre requis",
+          "descriptionRequired": "Description requise",
+          "buttonTypeRequired": "Type de bouton requis",
+          "buttonTextRequired": "Texte du bouton requis",
+          "minimumOneButton": "Au moins un bouton",
+          "replyIdRequired": "ID de réponse requis",
+          "copyTextRequired": "Texte de copie requis",
+          "urlRequired": "URL requise",
+          "phoneRequired": "Numéro de téléphone requis"
+        }
+      }
+    },
+    "toast": {
+      "error": "Erreur",
+      "recordingError": "Erreur d’enregistrement",
+      "sendError": "Erreur d’envoi"
+    },
+    "window": {
+      "expired": "Expiré",
+      "expiresIn": "Expire dans"
+    },
+    "media": {
+      "missingData": "Données base64 et/ou URL du média manquantes",
+      "attach": "Joindre un fichier",
+      "document": "Document",
+      "photosAndVideos": "Photos et vidéos",
+      "errors": {
+        "audioSize": "La taille de l’audio doit être inférieure à 16 Mo",
+        "imageSize": "La taille de l’image doit être inférieure à 5 Mo",
+        "videoSize": "La taille de la vidéo doit être inférieure à 16 Mo",
+        "documentSize": "La taille du document doit être inférieure à 100 Mo",
+        "unsupportedType": "Type de fichier non pris en charge"
+      },
+      "selectedMedia": {
+        "imageAlt": "Image sélectionnée",
+        "file": "Fichier",
+        "selectedFile": "Fichier sélectionné"
+      }
     }
   },
   "sidebar": {
     "dashboard": "Vue d'ensemble",
+    "chat": "Chat",
     "configurations": "Configurations",
     "settings": "Comportement",
     "proxy": "Proxy",
