@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 import { DropdownMenu, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { ArrowRightIcon, ChevronDownIcon, SparkleIcon, User, ZapIcon } from "lucide-react";
 import { RefObject, useEffect, useMemo, useState } from "react";
@@ -33,6 +35,7 @@ type MessagesProps = {
 
 // Utility function to format dates like WhatsApp
 const formatDateSeparator = (date: Date): string => {
+  const { t } = useTranslation();
   const today = new Date();
   const yesterday = new Date(today);
   yesterday.setDate(yesterday.getDate() - 1);
@@ -41,22 +44,22 @@ const formatDateSeparator = (date: Date): string => {
 
   // Check if it's today
   if (messageDate.toDateString() === today.toDateString()) {
-    return "Hoje";
+    return t("chat.date.today");
   }
 
   // Check if it's yesterday
   if (messageDate.toDateString() === yesterday.toDateString()) {
-    return "Ontem";
+    return t("chat.date.yesterday");
   }
 
   // Check if it's within the last week
   const daysDiff = Math.floor((today.getTime() - messageDate.getTime()) / (1000 * 60 * 60 * 24));
   if (daysDiff < 7) {
-    return messageDate.toLocaleDateString("pt-BR", { weekday: "long" });
+    return messageDate.toLocaleDateString(t("chat.date.location"), { weekday: "long" });
   }
 
   // For older dates, show the full date
-  return messageDate.toLocaleDateString("pt-BR", {
+  return messageDate.toLocaleDateString(t("chat.date.location"), {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
@@ -139,6 +142,8 @@ const getMessageText = (messageObj: any): string => {
 
 // Component to render different message types based on messageType
 const MessageContent = ({ message }: { message: Message }) => {
+  const { t } = useTranslation();
+  
   const messageType = message.messageType as string;
 
   switch (messageType) {
@@ -149,10 +154,10 @@ const MessageContent = ({ message }: { message: Message }) => {
           <div className="p-3 bg-muted rounded-lg max-w-xs">
             <div className="flex items-center gap-2 mb-2">
               <div className="text-xl">👤</div>
-              <span className="font-medium">Contact</span>
+              <span className="font-medium">{t("chat.contact")}</span>
             </div>
             {contactMsg.displayName && <p className="text-sm font-medium">{contactMsg.displayName}</p>}
-            {contactMsg.vcard && <p className="text-xs text-muted-foreground">Contact card</p>}
+            {contactMsg.vcard && <p className="text-xs text-muted-foreground">{t("chat.contactCart")}</p>}
           </div>
         );
       }
@@ -163,7 +168,7 @@ const MessageContent = ({ message }: { message: Message }) => {
           <div className="p-3 bg-muted rounded-lg max-w-xs">
             <div className="flex items-center gap-2 mb-2">
               <div className="text-xl">📍</div>
-              <span className="font-medium">Location</span>
+              <span className="font-medium">{t("chat.messageType.location.title")}</span>
             </div>
             {locationMsg.name && <p className="text-sm font-medium">{locationMsg.name}</p>}
             {locationMsg.address && <p className="text-xs text-muted-foreground">{locationMsg.address}</p>}
@@ -173,7 +178,7 @@ const MessageContent = ({ message }: { message: Message }) => {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary hover:underline text-sm mt-1 inline-block">
-                View on Maps
+                {t("chat.messageType.location.viewOnMaps")}
               </a>
             )}
           </div>
@@ -207,8 +212,8 @@ const MessageContent = ({ message }: { message: Message }) => {
             />
           ) : (
             <div className="rounded bg-muted p-4 max-w-xs">
-              <p className="text-center text-muted-foreground">Image couldn't be loaded</p>
-              <p className="text-center text-xs text-muted-foreground mt-1">Missing base64 data and mediaUrl</p>
+              <p className="text-center text-muted-foreground">{t("chat.messageType.image.notFound")}</p>
+              <p className="text-center text-xs text-muted-foreground mt-1">{t("chat.media.missingData")}</p>
             </div>
           )}
           {message.message.imageMessage?.caption && <p className="text-sm">{message.message.imageMessage.caption}</p>}
@@ -235,8 +240,8 @@ const MessageContent = ({ message }: { message: Message }) => {
             />
           ) : (
             <div className="rounded bg-muted p-4 max-w-xs">
-              <p className="text-center text-muted-foreground">Video couldn't be loaded</p>
-              <p className="text-center text-xs text-muted-foreground mt-1">Missing base64 data and mediaUrl</p>
+              <p className="text-center text-muted-foreground">{t("chat.messageType.video.notFound")}</p>
+              <p className="text-center text-xs text-muted-foreground mt-1">{t("chat.media.missingData")}</p>
             </div>
           )}
           {message.message.videoMessage?.caption && <p className="text-sm">{message.message.videoMessage.caption}</p>}
@@ -252,12 +257,12 @@ const MessageContent = ({ message }: { message: Message }) => {
       return audioSrc ? (
         <audio controls className="w-full max-w-xs">
           <source src={audioSrc} type="audio/mpeg" />
-          Your browser does not support the audio element.
+          {t("chat.messageType.audio.notSupported")}.
         </audio>
       ) : (
         <div className="rounded bg-muted p-4 max-w-xs">
-          <p className="text-center text-muted-foreground">Audio couldn't be loaded</p>
-          <p className="text-center text-xs text-muted-foreground mt-1">Missing base64 data and mediaUrl</p>
+          <p className="text-center text-muted-foreground">{t("chat.messageType.audio.notFound")}</p>
+          <p className="text-center text-xs text-muted-foreground mt-1">{t("chat.media.missingData")}</p>
         </div>
       );
 
@@ -280,7 +285,7 @@ const MessageContent = ({ message }: { message: Message }) => {
       return (
         <div className="text-xs text-muted-foreground bg-muted p-2 rounded max-w-xs">
           <details>
-            <summary>Unknown message type: {messageType}</summary>
+            <summary>{t("chat.messageType.unknownMessage")}: {messageType}</summary>
             <pre className="mt-2 whitespace-pre-wrap break-all text-xs">{JSON.stringify(message.message, null, 2)}</pre>
           </details>
         </div>
@@ -416,7 +421,7 @@ function Messages({ textareaRef, handleTextareaChange, textareaHeight, lastMessa
     const messageMap = new Map();
 
     // First add all messages from React Query
-    messages.forEach((message) => messageMap.set(message.key.id, message));
+    messages.forEach((message: { key: { id: any; }; }) => messageMap.set(message.key.id, message));
 
     // Then add/update with real-time messages
     realtimeMessages.forEach((message) => {
