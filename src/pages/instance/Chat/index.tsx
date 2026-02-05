@@ -1,4 +1,5 @@
 import "./style.css";
+import { useTranslation } from "react-i18next";
 import { User, MessageCircle, PlusIcon } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -28,6 +29,7 @@ const formatJid = (remoteJid: string): string => {
 };
 
 function Chat() {
+  const { t } = useTranslation();
   const isMD = useMediaQuery("(min-width: 768px)");
   const lastMessageRef = useRef<HTMLDivElement | null>(null);
   const [textareaHeight] = useState("auto");
@@ -49,7 +51,7 @@ function Chat() {
     const chatMap = new Map();
 
     // First add all chats from React Query
-    chats.forEach((chat) => chatMap.set(chat.remoteJid, chat));
+    chats.forEach((chat: { remoteJid: any; }) => chatMap.set(chat.remoteJid, chat));
 
     // Then add/update with real-time chats
     realtimeChats.forEach((chat) => {
@@ -181,19 +183,19 @@ function Chat() {
                 <div className="flex h-7 w-7 items-center justify-center rounded-full">
                   <MessageCircle className="h-4 w-4" />
                 </div>
-                <div className="grow overflow-hidden text-ellipsis whitespace-nowrap text-sm">Chat</div>
+                <div className="grow overflow-hidden text-ellipsis whitespace-nowrap text-sm">{t("chat.title")}</div>
                 <PlusIcon className="h-4 w-4" />
               </Button>
             </div>
             <Tabs defaultValue="contacts" className="flex flex-col flex-1 min-h-0">
               <TabsList className="tabs-chat flex-shrink-0">
-                <TabsTrigger value="contacts">Contatos</TabsTrigger>
-                <TabsTrigger value="groups">Grupos</TabsTrigger>
+                <TabsTrigger value="contacts">{t("chat.contacts")}</TabsTrigger>
+                <TabsTrigger value="groups">{t("chat.groups")}</TabsTrigger>
               </TabsList>
               <TabsContent value="contacts" className="flex-1 overflow-hidden">
                 <div className="h-full overflow-auto">
                   <div className="grid gap-1 p-2 text-foreground">
-                    <div className="px-2 text-xs font-medium text-muted-foreground">Contatos</div>
+                    <div className="px-2 text-xs font-medium text-muted-foreground">{t("chat.contacts")}</div>
                     {chats?.map(
                       (chat: ChatType) =>
                         chat.remoteJid.includes("@s.whatsapp.net") && (
