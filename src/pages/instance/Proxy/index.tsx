@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
+import { getProvider } from "@/lib/queries/token";
 import { useFetchProxy } from "@/lib/queries/proxy/fetchProxy";
 import { useManageProxy } from "@/lib/queries/proxy/manageProxy";
 
@@ -33,6 +34,7 @@ function Proxy() {
   const { t } = useTranslation();
   const { instance } = useInstance();
   const [loading, setLoading] = useState(false);
+  const isGo = getProvider() === "go";
 
   const { createProxy } = useManageProxy();
   const { data: proxy } = useFetchProxy({
@@ -100,7 +102,7 @@ function Proxy() {
             <h3 className="mb-1 text-lg font-medium">{t("proxy.title")}</h3>
             <Separator className="my-4" />
             <div className="mx-4 space-y-2 divide-y [&>*]:p-4">
-              <FormSwitch name="enabled" label={t("proxy.form.enabled.label")} className="w-full justify-between" helper={t("proxy.form.enabled.description")} />
+              {!isGo && <FormSwitch name="enabled" label={t("proxy.form.enabled.label")} className="w-full justify-between" helper={t("proxy.form.enabled.description")} />}
               <div className="grid gap-4 sm:grid-cols-[10rem_1fr_10rem] md:gap-8">
                 <FormInput name="protocol" label={t("proxy.form.protocol.label")}>
                   <Input />

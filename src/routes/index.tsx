@@ -63,7 +63,7 @@ const router = createBrowserRouter([
   {
     path: "/manager/instance/:instanceId/chat",
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute feature="chat">
         <InstanceLayout>
           <Chat />
         </InstanceLayout>
@@ -73,7 +73,7 @@ const router = createBrowserRouter([
   {
     path: "/manager/instance/:instanceId/chat/:remoteJid",
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute feature="chat">
         <InstanceLayout>
           <Chat />
         </InstanceLayout>
@@ -83,7 +83,7 @@ const router = createBrowserRouter([
   {
     path: "/manager/instance/:instanceId/settings",
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute feature="settings">
         <InstanceLayout>
           <Settings />
         </InstanceLayout>
@@ -93,7 +93,7 @@ const router = createBrowserRouter([
   {
     path: "/manager/instance/:instanceId/openai",
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute feature="openai">
         <InstanceLayout>
           <Openai />
         </InstanceLayout>
@@ -103,7 +103,7 @@ const router = createBrowserRouter([
   {
     path: "/manager/instance/:instanceId/openai/:botId",
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute feature="openai">
         <InstanceLayout>
           <Openai />
         </InstanceLayout>
@@ -113,7 +113,7 @@ const router = createBrowserRouter([
   {
     path: "/manager/instance/:instanceId/webhook",
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute feature="webhook">
         <InstanceLayout>
           <Webhook />
         </InstanceLayout>
@@ -123,7 +123,7 @@ const router = createBrowserRouter([
   {
     path: "/manager/instance/:instanceId/websocket",
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute feature="websocket">
         <InstanceLayout>
           <Websocket />
         </InstanceLayout>
@@ -133,7 +133,7 @@ const router = createBrowserRouter([
   {
     path: "/manager/instance/:instanceId/rabbitmq",
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute feature="rabbitmq">
         <InstanceLayout>
           <Rabbitmq />
         </InstanceLayout>
@@ -143,7 +143,7 @@ const router = createBrowserRouter([
   {
     path: "/manager/instance/:instanceId/sqs",
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute feature="sqs">
         <InstanceLayout>
           <Sqs />
         </InstanceLayout>
@@ -153,7 +153,7 @@ const router = createBrowserRouter([
   {
     path: "/manager/instance/:instanceId/chatwoot",
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute feature="chatwoot">
         <InstanceLayout>
           <Chatwoot />
         </InstanceLayout>
@@ -163,7 +163,7 @@ const router = createBrowserRouter([
   {
     path: "/manager/instance/:instanceId/typebot",
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute feature="typebot">
         <InstanceLayout>
           <Typebot />
         </InstanceLayout>
@@ -173,7 +173,7 @@ const router = createBrowserRouter([
   {
     path: "/manager/instance/:instanceId/typebot/:typebotId",
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute feature="typebot">
         <InstanceLayout>
           <Typebot />
         </InstanceLayout>
@@ -183,7 +183,7 @@ const router = createBrowserRouter([
   {
     path: "/manager/instance/:instanceId/dify",
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute feature="dify">
         <InstanceLayout>
           <Dify />
         </InstanceLayout>
@@ -193,7 +193,7 @@ const router = createBrowserRouter([
   {
     path: "/manager/instance/:instanceId/dify/:difyId",
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute feature="dify">
         <InstanceLayout>
           <Dify />
         </InstanceLayout>
@@ -203,7 +203,7 @@ const router = createBrowserRouter([
   {
     path: "/manager/instance/:instanceId/n8n",
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute feature="n8n">
         <InstanceLayout>
           <N8n />
         </InstanceLayout>
@@ -213,7 +213,7 @@ const router = createBrowserRouter([
   {
     path: "/manager/instance/:instanceId/n8n/:n8nId",
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute feature="n8n">
         <InstanceLayout>
           <N8n />
         </InstanceLayout>
@@ -223,7 +223,7 @@ const router = createBrowserRouter([
   {
     path: "/manager/instance/:instanceId/evoai",
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute feature="evoai">
         <InstanceLayout>
           <Evoai />
         </InstanceLayout>
@@ -233,7 +233,7 @@ const router = createBrowserRouter([
   {
     path: "/manager/instance/:instanceId/evoai/:evoaiId",
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute feature="evoai">
         <InstanceLayout>
           <Evoai />
         </InstanceLayout>
@@ -243,7 +243,7 @@ const router = createBrowserRouter([
   {
     path: "/manager/instance/:instanceId/evolutionBot",
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute feature="evolutionBot">
         <InstanceLayout>
           <EvolutionBot />
         </InstanceLayout>
@@ -253,7 +253,7 @@ const router = createBrowserRouter([
   {
     path: "/manager/instance/:instanceId/evolutionBot/:evolutionBotId",
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute feature="evolutionBot">
         <InstanceLayout>
           <EvolutionBot />
         </InstanceLayout>
@@ -263,7 +263,7 @@ const router = createBrowserRouter([
   {
     path: "/manager/instance/:instanceId/flowise",
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute feature="flowise">
         <InstanceLayout>
           <Flowise />
         </InstanceLayout>
@@ -273,7 +273,7 @@ const router = createBrowserRouter([
   {
     path: "/manager/instance/:instanceId/flowise/:flowiseId",
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute feature="flowise">
         <InstanceLayout>
           <Flowise />
         </InstanceLayout>
@@ -283,7 +283,7 @@ const router = createBrowserRouter([
   {
     path: "/manager/instance/:instanceId/proxy",
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute feature="proxy">
         <InstanceLayout>
           <Proxy />
         </InstanceLayout>

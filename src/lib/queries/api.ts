@@ -13,10 +13,10 @@ api.interceptors.request.use(
       config.baseURL = apiUrl.toString();
     }
 
-    if (!config.headers.apiKey || config.headers.apiKey === "") {
+    if (!config.headers.has("apikey")) {
       const token = getToken(TOKEN_ID.INSTANCE_TOKEN);
       if (token) {
-        config.headers.apikey = `${token}`;
+        config.headers.set("apikey", token);
       }
     }
 
@@ -38,10 +38,10 @@ apiGlobal.interceptors.request.use(
       config.baseURL = apiUrl.toString();
     }
 
-    if (!config.headers.apiKey || config.headers.apiKey === "") {
+    if (!config.headers.has("apikey")) {
       const token = getToken(TOKEN_ID.TOKEN);
       if (token) {
-        config.headers.apikey = `${token}`;
+        config.headers.set("apikey", token);
       }
     }
 

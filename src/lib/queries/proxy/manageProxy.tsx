@@ -1,7 +1,11 @@
+import { useQueryClient } from "@tanstack/react-query";
+
 import { Proxy } from "@/types/evolution.types";
 
 import { api } from "../api";
+import { buildGoProxyMutations } from "../go/proxy/manageProxy";
 import { useManageMutation } from "../mutateQuery";
+import { getProvider } from "../token";
 
 interface IParams {
   instanceName: string;
@@ -17,7 +21,11 @@ const createProxy = async ({ instanceName, token, data }: IParams) => {
 };
 
 export function useManageProxy() {
-  const createProxyMutation = useManageMutation(createProxy, {
+  const qc = useQueryClient();
+  const provider = getProvider();
+  const go = provider === "go" ? buildGoProxyMutations(qc) : null;
+
+  const createProxyMutation = useManageMutation(go ? go.createProxy : createProxy, {
     invalidateKeys: [["proxy", "fetchProxy"]],
   });
 

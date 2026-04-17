@@ -14,6 +14,7 @@ import { Switch } from "@/components/ui/switch";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
+import { getProvider } from "@/lib/queries/token";
 import { useFetchWebhook } from "@/lib/queries/webhook/fetchWebhook";
 import { useManageWebhook } from "@/lib/queries/webhook/manageWebhook";
 import { cn } from "@/lib/utils";
@@ -30,10 +31,42 @@ const FormSchema = z.object({
 
 type FormSchemaType = z.infer<typeof FormSchema>;
 
+const GO_EVENTS = ["ALL", "MESSAGE", "SEND_MESSAGE", "READ_RECEIPT", "PRESENCE", "HISTORY_SYNC", "CHAT_PRESENCE", "CALL", "CONNECTION", "QRCODE", "LABEL", "CONTACT", "GROUP", "NEWSLETTER"];
+
+const API_EVENTS = [
+  "APPLICATION_STARTUP",
+  "QRCODE_UPDATED",
+  "MESSAGES_SET",
+  "MESSAGES_UPSERT",
+  "MESSAGES_UPDATE",
+  "MESSAGES_DELETE",
+  "SEND_MESSAGE",
+  "CONTACTS_SET",
+  "CONTACTS_UPSERT",
+  "CONTACTS_UPDATE",
+  "PRESENCE_UPDATE",
+  "CHATS_SET",
+  "CHATS_UPSERT",
+  "CHATS_UPDATE",
+  "CHATS_DELETE",
+  "GROUPS_UPSERT",
+  "GROUP_UPDATE",
+  "GROUP_PARTICIPANTS_UPDATE",
+  "CONNECTION_UPDATE",
+  "REMOVE_INSTANCE",
+  "LOGOUT_INSTANCE",
+  "LABELS_EDIT",
+  "LABELS_ASSOCIATION",
+  "CALL",
+  "TYPEBOT_START",
+  "TYPEBOT_CHANGE_STATUS",
+];
+
 function Webhook() {
   const { t } = useTranslation();
   const { instance } = useInstance();
   const [loading, setLoading] = useState(false);
+  const isGo = getProvider() === "go";
 
   const { createWebhook } = useManageWebhook();
   const { data: webhook } = useFetchWebhook({
@@ -90,34 +123,7 @@ function Webhook() {
     }
   };
 
-  const events = [
-    "APPLICATION_STARTUP",
-    "QRCODE_UPDATED",
-    "MESSAGES_SET",
-    "MESSAGES_UPSERT",
-    "MESSAGES_UPDATE",
-    "MESSAGES_DELETE",
-    "SEND_MESSAGE",
-    "CONTACTS_SET",
-    "CONTACTS_UPSERT",
-    "CONTACTS_UPDATE",
-    "PRESENCE_UPDATE",
-    "CHATS_SET",
-    "CHATS_UPSERT",
-    "CHATS_UPDATE",
-    "CHATS_DELETE",
-    "GROUPS_UPSERT",
-    "GROUP_UPDATE",
-    "GROUP_PARTICIPANTS_UPDATE",
-    "CONNECTION_UPDATE",
-    "REMOVE_INSTANCE",
-    "LOGOUT_INSTANCE",
-    "LABELS_EDIT",
-    "LABELS_ASSOCIATION",
-    "CALL",
-    "TYPEBOT_START",
-    "TYPEBOT_CHANGE_STATUS",
-  ];
+  const events = isGo ? GO_EVENTS : API_EVENTS;
 
   const handleSelectAll = () => {
     form.setValue("events", events);
@@ -135,12 +141,12 @@ function Webhook() {
             <h3 className="mb-1 text-lg font-medium">{t("webhook.title")}</h3>
             <Separator className="my-4" />
             <div className="mx-4 space-y-2 divide-y [&>*]:p-4">
-              <FormSwitch name="enabled" label={t("webhook.form.enabled.label")} className="w-full justify-between" helper={t("webhook.form.enabled.description")} />
+              {!isGo && <FormSwitch name="enabled" label={t("webhook.form.enabled.label")} className="w-full justify-between" helper={t("webhook.form.enabled.description")} />}
               <FormInput name="url" label="URL">
                 <Input />
               </FormInput>
-              <FormSwitch name="byEvents" label={t("webhook.form.byEvents.label")} className="w-full justify-between" helper={t("webhook.form.byEvents.description")} />
-              <FormSwitch name="base64" label={t("webhook.form.base64.label")} className="w-full justify-between" helper={t("webhook.form.base64.description")} />
+              {!isGo && <FormSwitch name="byEvents" label={t("webhook.form.byEvents.label")} className="w-full justify-between" helper={t("webhook.form.byEvents.description")} />}
+              {!isGo && <FormSwitch name="base64" label={t("webhook.form.base64.label")} className="w-full justify-between" helper={t("webhook.form.base64.description")} />}
               <div className="mb-4 flex justify-between">
                 <Button variant="outline" type="button" onClick={handleSelectAll}>
                   {t("button.markAll")}

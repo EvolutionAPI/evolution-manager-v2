@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { api } from "../api";
+import { useFetchProxyGo } from "../go/proxy/fetchProxy";
+import { getProvider } from "../token";
 import { UseQueryParams } from "../types";
 import { FetchProxyResponse } from "./types";
 
@@ -18,12 +20,20 @@ export const fetchProxy = async ({ instanceName, token }: IParams) => {
   return response.data;
 };
 
-export const useFetchProxy = (props: UseQueryParams<FetchProxyResponse> & Partial<IParams>) => {
-  const { instanceName, token, ...rest } = props;
+const useFetchProxyApi = (props: UseQueryParams<FetchProxyResponse> & Partial<IParams>) => {
+  const { instanceName, token, enabled, ...rest } = props;
   return useQuery<FetchProxyResponse>({
     ...rest,
     queryKey: queryKey({ instanceName, token }),
     queryFn: () => fetchProxy({ instanceName: instanceName!, token: token! }),
-    enabled: !!instanceName,
+    enabled: !!instanceName && (enabled ?? true),
   });
+};
+
+export const useFetchProxy = (props: UseQueryParams<FetchProxyResponse> & Partial<IParams>) => {
+  const provider = getProvider();
+  const apiQuery = useFetchProxyApi({ ...props, enabled: (props.enabled ?? true) && provider === "api" });
+  const goQuery = useFetchProxyGo({ ...props, enabled: (props.enabled ?? true) && provider === "go" });
+
+  return provider === "go" ? goQuery : apiQuery;
 };

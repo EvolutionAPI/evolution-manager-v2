@@ -7,15 +7,17 @@ import { z } from "zod";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormInput } from "@/components/ui/form";
+import { Form, FormInput, FormSelect } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
 import { verifyCreds } from "@/lib/queries/auth/verifyCreds";
+import { verifyGoServer } from "@/lib/queries/auth/verifyGoServer";
 import { verifyServer } from "@/lib/queries/auth/verifyServer";
-import { logout, saveToken } from "@/lib/queries/token";
+import { DEFAULT_PROVIDER, logout, saveToken } from "@/lib/queries/token";
 import { useTheme } from "@/components/theme-provider";
 
 const loginSchema = z.object({
+  provider: z.enum(["api", "go"]).default(DEFAULT_PROVIDER),
   serverUrl: z.string({ required_error: "serverUrl is required" }).url("URL inválida"),
   apiKey: z.string({ required_error: "ApiKey is required" }),
 });
@@ -28,12 +30,35 @@ function Login() {
   const loginForm = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
+      provider: DEFAULT_PROVIDER,
       serverUrl: window.location.protocol + "//" + window.location.host,
       apiKey: "",
     },
   });
 
   const handleLogin: SubmitHandler<LoginSchema> = async (data) => {
+    if (data.provider === "go") {
+      const ok = await verifyGoServer({ url: data.serverUrl, token: data.apiKey });
+
+      if (!ok) {
+        logout();
+        loginForm.setError("apiKey", {
+          type: "manual",
+          message: t("login.message.invalidCredentials"),
+        });
+        return;
+      }
+
+      saveToken({
+        url: data.serverUrl,
+        token: data.apiKey,
+        provider: "go",
+      });
+
+      navigate("/manager/");
+      return;
+    }
+
     const server = await verifyServer({ url: data.serverUrl });
 
     if (!server || !server.version) {
@@ -63,6 +88,7 @@ function Login() {
       clientName: server.clientName,
       url: data.serverUrl,
       token: data.apiKey,
+      provider: "api",
     });
 
     navigate("/manager/");
@@ -83,6 +109,15 @@ function Login() {
             <form onSubmit={loginForm.handleSubmit(handleLogin)}>
               <CardContent>
                 <div className="grid w-full items-center gap-4">
+                  <FormSelect
+                    required
+                    name="provider"
+                    label="Provider"
+                    options={[
+                      { value: "api", label: "Evolution API" },
+                      { value: "go", label: "Evolution GO" },
+                    ]}
+                  />
                   <FormInput required name="serverUrl" label={t("login.form.serverUrl")}>
                     <Input />
                   </FormInput>

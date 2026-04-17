@@ -6,7 +6,12 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
+import { FEATURES, FeatureKey, isFeatureEnabled } from "@/lib/provider/features";
 import { cn } from "@/lib/utils";
+
+const GATED_IDS = new Set<string>(Object.keys(FEATURES));
+const isGated = (id: string): id is FeatureKey => GATED_IDS.has(id);
+const shouldShow = (id?: string) => !id || !isGated(id) || isFeatureEnabled(id);
 
 import { Button } from "./ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible";
@@ -160,20 +165,29 @@ function Sidebar() {
 
   const links = useMemo(
     () =>
-      Menus.map((menu) => ({
-        ...menu,
-        children:
-          "children" in menu
-            ? menu.children?.map((child) => ({
-                ...child,
-                isActive: "path" in child ? pathname.includes(child.path) : false,
-              }))
-            : undefined,
-        isActive: "path" in menu && menu.path ? pathname.includes(menu.path) : false,
-      })).map((menu) => ({
-        ...menu,
-        isActive: menu.isActive || ("children" in menu && menu.children?.some((child) => child.isActive)),
-      })),
+      Menus
+        .map((menu) => ({
+          ...menu,
+          children:
+            "children" in menu
+              ? menu.children
+                  ?.filter((child) => shouldShow("id" in child ? child.id : undefined))
+                  .map((child) => ({
+                    ...child,
+                    isActive: "path" in child ? pathname.includes(child.path) : false,
+                  }))
+              : undefined,
+          isActive: "path" in menu && menu.path ? pathname.includes(menu.path) : false,
+        }))
+        .filter((menu) => {
+          if ("id" in menu && menu.id && !shouldShow(menu.id)) return false;
+          if ("children" in menu && menu.children !== undefined && menu.children.length === 0) return false;
+          return true;
+        })
+        .map((menu) => ({
+          ...menu,
+          isActive: menu.isActive || ("children" in menu && menu.children?.some((child) => child.isActive)),
+        })),
     [Menus, pathname],
   );
 

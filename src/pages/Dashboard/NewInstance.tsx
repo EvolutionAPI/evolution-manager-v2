@@ -12,9 +12,12 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogT
 import { FormInput, FormSelect } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
+import { getProvider } from "@/lib/queries/token";
 import { useManageInstance } from "@/lib/queries/instance/manageInstance";
 
 import { NewInstance as NewInstanceType } from "@/types/evolution.types";
+
+import { GoNewInstance } from "./GoNewInstance";
 
 const stringOrUndefined = z
   .string()
@@ -93,6 +96,10 @@ function NewInstance({ resetTable }: { resetTable: () => void }) {
       businessId: "",
     });
   };
+
+  if (getProvider() === "go") {
+    return <GoNewInstance resetTable={resetTable} />;
+  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { api } from "../api";
+import { useFetchWebhookGo } from "../go/webhook/fetchWebhook";
+import { getProvider } from "../token";
 import { UseQueryParams } from "../types";
 import { FetchWebhookResponse } from "./types";
 
@@ -18,12 +20,20 @@ export const fetchWebhook = async ({ instanceName, token }: IParams) => {
   return response.data;
 };
 
-export const useFetchWebhook = (props: UseQueryParams<FetchWebhookResponse> & Partial<IParams>) => {
-  const { instanceName, token, ...rest } = props;
+const useFetchWebhookApi = (props: UseQueryParams<FetchWebhookResponse> & Partial<IParams>) => {
+  const { instanceName, token, enabled, ...rest } = props;
   return useQuery<FetchWebhookResponse>({
     ...rest,
     queryKey: queryKey({ instanceName, token }),
     queryFn: () => fetchWebhook({ instanceName: instanceName!, token: token! }),
-    enabled: !!instanceName,
+    enabled: !!instanceName && (enabled ?? true),
   });
+};
+
+export const useFetchWebhook = (props: UseQueryParams<FetchWebhookResponse> & Partial<IParams>) => {
+  const provider = getProvider();
+  const apiQuery = useFetchWebhookApi({ ...props, enabled: (props.enabled ?? true) && provider === "api" });
+  const goQuery = useFetchWebhookGo({ ...props, enabled: (props.enabled ?? true) && provider === "go" });
+
+  return provider === "go" ? goQuery : apiQuery;
 };

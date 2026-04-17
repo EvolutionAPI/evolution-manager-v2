@@ -1,7 +1,11 @@
+import { useQueryClient } from "@tanstack/react-query";
+
 import { Webhook } from "@/types/evolution.types";
 
 import { api } from "../api";
+import { buildGoWebhookMutations } from "../go/webhook/manageWebhook";
 import { useManageMutation } from "../mutateQuery";
+import { getProvider } from "../token";
 
 interface IParams {
   instanceName: string;
@@ -15,7 +19,11 @@ const createWebhook = async ({ instanceName, token, data }: IParams) => {
 };
 
 export function useManageWebhook() {
-  const createWebhookMutation = useManageMutation(createWebhook, {
+  const qc = useQueryClient();
+  const provider = getProvider();
+  const go = provider === "go" ? buildGoWebhookMutations(qc) : null;
+
+  const createWebhookMutation = useManageMutation(go ? go.createWebhook : createWebhook, {
     invalidateKeys: [["webhook", "fetchWebhook"]],
   });
 

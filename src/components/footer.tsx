@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useVerifyServer } from "@/lib/queries/auth/verifyServer";
-import { getToken, TOKEN_ID } from "@/lib/queries/token";
+import { getProvider, getToken, TOKEN_ID } from "@/lib/queries/token";
 
 import { Button } from "./ui/button";
 
@@ -10,7 +10,8 @@ function Footer() {
   const { t } = useTranslation();
 
   const url = getToken(TOKEN_ID.API_URL);
-  const { data: serverInfo } = useVerifyServer({ url });
+  const provider = getProvider();
+  const { data: serverInfo } = useVerifyServer({ url, enabled: provider === "api" });
 
   const clientName = useMemo(() => serverInfo?.clientName, [serverInfo]);
   const version = useMemo(() => serverInfo?.version, [serverInfo]);

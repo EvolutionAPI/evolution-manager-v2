@@ -1,7 +1,11 @@
+import { useQueryClient } from "@tanstack/react-query";
+
 import { NewInstance, Settings } from "@/types/evolution.types";
 
 import { api, apiGlobal } from "../api";
+import { buildGoInstanceMutations } from "../go/instance/manageInstance";
 import { useManageMutation } from "../mutateQuery";
+import { getProvider } from "../token";
 
 const createInstance = async (instance: NewInstance) => {
   const response = await apiGlobal.post("/instance/create", instance);
@@ -51,34 +55,38 @@ const updateSettings = async ({ instanceName, token, data }: UpdateSettingsParam
 };
 
 export function useManageInstance() {
-  const connectMutation = useManageMutation(connect, {
+  const queryClient = useQueryClient();
+  const provider = getProvider();
+  const go = provider === "go" ? buildGoInstanceMutations(queryClient) : null;
+
+  const connectMutation = useManageMutation(go ? go.connect : connect, {
     invalidateKeys: [
       ["instance", "fetchInstance"],
       ["instance", "fetchInstances"],
     ],
   });
-  const updateSettingsMutation = useManageMutation(updateSettings, {
+  const updateSettingsMutation = useManageMutation(go ? go.updateSettings : updateSettings, {
     invalidateKeys: [["instance", "fetchSettings"]],
   });
-  const deleteInstanceMutation = useManageMutation(deleteInstance, {
+  const deleteInstanceMutation = useManageMutation(go ? go.deleteInstance : deleteInstance, {
     invalidateKeys: [
       ["instance", "fetchInstance"],
       ["instance", "fetchInstances"],
     ],
   });
-  const logoutMutation = useManageMutation(logout, {
+  const logoutMutation = useManageMutation(go ? go.logout : logout, {
     invalidateKeys: [
       ["instance", "fetchInstance"],
       ["instance", "fetchInstances"],
     ],
   });
-  const restartMutation = useManageMutation(restart, {
+  const restartMutation = useManageMutation(go ? go.restart : restart, {
     invalidateKeys: [
       ["instance", "fetchInstance"],
       ["instance", "fetchInstances"],
     ],
   });
-  const createInstanceMutation = useManageMutation(createInstance, {
+  const createInstanceMutation = useManageMutation(go ? go.createInstance : createInstance, {
     invalidateKeys: [["instance", "fetchInstances"]],
   });
 

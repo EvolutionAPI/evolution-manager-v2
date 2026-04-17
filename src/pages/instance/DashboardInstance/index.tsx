@@ -17,14 +17,20 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { useInstance } from "@/contexts/InstanceContext";
 
 import { useManageInstance } from "@/lib/queries/instance/manageInstance";
-import { getToken, TOKEN_ID } from "@/lib/queries/token";
+import { getProvider, getToken, TOKEN_ID } from "@/lib/queries/token";
+
+import { GoQrCodeModal } from "./GoQrCodeModal";
+import { GoSendMessageModal } from "./GoSendMessageModal";
 
 function DashboardInstance() {
   const { t, i18n } = useTranslation();
   const numberFormatter = new Intl.NumberFormat(i18n.language);
   const [qrCode, setQRCode] = useState<string | null>(null);
   const [pairingCode, setPairingCode] = useState("");
+  const [goQrOpen, setGoQrOpen] = useState(false);
+  const [goSendOpen, setGoSendOpen] = useState(false);
   const token = getToken(TOKEN_ID.TOKEN);
+  const isGo = getProvider() === "go";
   const { theme } = useTheme();
 
   const { connect, logout, restart } = useManageInstance();
@@ -153,40 +159,51 @@ function DashboardInstance() {
               <Alert variant="warning" className="flex flex-wrap items-center justify-between gap-3">
                 <AlertTitle className="text-lg font-bold tracking-wide">{t("instance.dashboard.alert")}</AlertTitle>
 
-                <Dialog>
-                  <DialogTrigger onClick={() => handleConnect(instance.name, false)} asChild>
-                    <Button variant="warning">{t("instance.dashboard.button.qrcode.label")}</Button>
-                  </DialogTrigger>
-                  <DialogContent onCloseAutoFocus={closeQRCodePopup}>
-                    <DialogHeader>{t("instance.dashboard.button.qrcode.title")}</DialogHeader>
-                    <div className="flex items-center justify-center">{qrCode && <QRCode value={qrCode} size={256} bgColor="transparent" fgColor={qrCodeColor} className="rounded-sm" />}</div>
-                  </DialogContent>
-                </Dialog>
+                {isGo ? (
+                  <>
+                    <Button variant="warning" onClick={() => setGoQrOpen(true)}>
+                      {t("instance.dashboard.button.qrcode.label")}
+                    </Button>
+                    <GoQrCodeModal open={goQrOpen} onOpenChange={setGoQrOpen} />
+                  </>
+                ) : (
+                  <>
+                    <Dialog>
+                      <DialogTrigger onClick={() => handleConnect(instance.name, false)} asChild>
+                        <Button variant="warning">{t("instance.dashboard.button.qrcode.label")}</Button>
+                      </DialogTrigger>
+                      <DialogContent onCloseAutoFocus={closeQRCodePopup}>
+                        <DialogHeader>{t("instance.dashboard.button.qrcode.title")}</DialogHeader>
+                        <div className="flex items-center justify-center">{qrCode && <QRCode value={qrCode} size={256} bgColor="transparent" fgColor={qrCodeColor} className="rounded-sm" />}</div>
+                      </DialogContent>
+                    </Dialog>
 
-                {instance.number && (
-                  <Dialog>
-                    <DialogTrigger className="connect-code-button" onClick={() => handleConnect(instance.name, true)}>
-                      {t("instance.dashboard.button.pairingCode.label")}
-                    </DialogTrigger>
-                    <DialogContent onCloseAutoFocus={closeQRCodePopup}>
-                      <DialogHeader>
-                        <DialogDescription>
-                          {pairingCode ? (
-                            <div className="py-3">
-                              <p className="text-center">
-                                <strong>{t("instance.dashboard.button.pairingCode.title")}</strong>
-                              </p>
-                              <p className="pairing-code text-center">
-                                {pairingCode.substring(0, 4)}-{pairingCode.substring(4, 8)}
-                              </p>
-                            </div>
-                          ) : (
-                            <LoadingSpinner />
-                          )}
-                        </DialogDescription>
-                      </DialogHeader>
-                    </DialogContent>
-                  </Dialog>
+                    {instance.number && (
+                      <Dialog>
+                        <DialogTrigger className="connect-code-button" onClick={() => handleConnect(instance.name, true)}>
+                          {t("instance.dashboard.button.pairingCode.label")}
+                        </DialogTrigger>
+                        <DialogContent onCloseAutoFocus={closeQRCodePopup}>
+                          <DialogHeader>
+                            <DialogDescription>
+                              {pairingCode ? (
+                                <div className="py-3">
+                                  <p className="text-center">
+                                    <strong>{t("instance.dashboard.button.pairingCode.title")}</strong>
+                                  </p>
+                                  <p className="pairing-code text-center">
+                                    {pairingCode.substring(0, 4)}-{pairingCode.substring(4, 8)}
+                                  </p>
+                                </div>
+                              ) : (
+                                <LoadingSpinner />
+                              )}
+                            </DialogDescription>
+                          </DialogHeader>
+                        </DialogContent>
+                      </Dialog>
+                    )}
+                  </>
                 )}
               </Alert>
             )}
@@ -195,6 +212,11 @@ function DashboardInstance() {
             <Button variant="outline" className="refresh-button" size="icon" onClick={handleReload}>
               <RefreshCw size="20" />
             </Button>
+            {isGo && instance.connectionStatus === "open" && (
+              <Button variant="secondary" onClick={() => setGoSendOpen(true)}>
+                ENVIAR MENSAGEM
+              </Button>
+            )}
             <Button className="action-button" variant="secondary" onClick={() => handleRestart(instance.name)}>
               {t("instance.dashboard.button.restart").toUpperCase()}
             </Button>
@@ -204,6 +226,7 @@ function DashboardInstance() {
           </CardFooter>
         </Card>
       </section>
+      {isGo && <GoSendMessageModal open={goSendOpen} onOpenChange={setGoSendOpen} />}
       <section className="grid grid-cols-[repeat(auto-fit,_minmax(15rem,_1fr))] gap-6">
         <Card className="instance-card">
           <CardHeader>

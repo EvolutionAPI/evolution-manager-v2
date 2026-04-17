@@ -1,4 +1,8 @@
 /* eslint-disable no-unused-vars */
+export type Provider = "api" | "go";
+
+export const DEFAULT_PROVIDER: Provider = "api";
+
 export enum TOKEN_ID {
   API_URL = "apiUrl",
   TOKEN = "token",
@@ -10,6 +14,7 @@ export enum TOKEN_ID {
   FACEBOOK_CONFIG_ID = "facebookConfigId",
   FACEBOOK_USER_TOKEN = "facebookUserToken",
   CLIENT_NAME = "clientName",
+  PROVIDER = "provider",
 }
 
 interface SaveCredentialsParams {
@@ -20,6 +25,7 @@ interface SaveCredentialsParams {
   facebookConfigId?: string;
   facebookUserToken?: string;
   clientName?: string;
+  provider?: Provider;
 }
 
 export const saveToken = async (params: SaveCredentialsParams) => {
@@ -34,6 +40,7 @@ export const saveToken = async (params: SaveCredentialsParams) => {
   if (params.facebookConfigId) localStorage.setItem(TOKEN_ID.FACEBOOK_CONFIG_ID, params.facebookConfigId);
   if (params.facebookUserToken) localStorage.setItem(TOKEN_ID.FACEBOOK_USER_TOKEN, params.facebookUserToken);
   if (params.clientName) localStorage.setItem(TOKEN_ID.CLIENT_NAME, params.clientName);
+  if (params.provider) localStorage.setItem(TOKEN_ID.PROVIDER, params.provider);
 };
 
 export const logout = () => {
@@ -44,8 +51,14 @@ export const logout = () => {
   localStorage.removeItem(TOKEN_ID.FACEBOOK_CONFIG_ID);
   localStorage.removeItem(TOKEN_ID.FACEBOOK_USER_TOKEN);
   localStorage.removeItem(TOKEN_ID.CLIENT_NAME);
+  localStorage.removeItem(TOKEN_ID.PROVIDER);
 };
 
 export const getToken = (token: TOKEN_ID) => {
   return localStorage.getItem(token);
+};
+
+export const getProvider = (): Provider => {
+  const value = localStorage.getItem(TOKEN_ID.PROVIDER);
+  return value === "go" ? "go" : DEFAULT_PROVIDER;
 };
