@@ -2,8 +2,8 @@ import { ChevronDown, ReplyIcon, DeleteIcon } from "lucide-react";
 import { useContext } from "react";
 import { useTranslation } from "react-i18next";
 
-import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Button } from "@evoapi/design-system/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@evoapi/design-system/dropdown-menu";
 
 import { useEmbedColors } from "@/contexts/EmbedColorsContext";
 import { useEmbedInstance } from "@/contexts/EmbedInstanceContext";

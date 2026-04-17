@@ -2,7 +2,7 @@ import { FileIcon, XIcon } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@evoapi/design-system/button";
 
 type SelectedMediaProps = {
   selectedMedia: File | null;

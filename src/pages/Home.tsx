@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "@evoapi/design-system/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@evoapi/design-system/card";
+import { Badge } from "@evoapi/design-system/badge";
 import { ArrowRight, Github, Globe, Mail, Shield } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@/components/theme-provider";

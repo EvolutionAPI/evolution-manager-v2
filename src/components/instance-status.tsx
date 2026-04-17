@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 
-import { Badge } from "./ui/badge";
+import { Badge } from "@evoapi/design-system/badge";
 
 export function InstanceStatus({ status }: { status: string }) {
   const { t } = useTranslation();

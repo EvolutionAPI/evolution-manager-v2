@@ -1,10 +1,8 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 
-import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
-import { Sidebar } from "@/components/sidebar";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { InstanceSidebar } from "@/components/sidebar";
 
 import { InstanceProvider } from "@/contexts/InstanceContext";
 
@@ -17,21 +15,11 @@ function InstanceLayout({ children }: LayoutProps) {
 
   return (
     <InstanceProvider>
-      <div className="flex h-screen flex-col">
-        <Header instanceId={instanceId} />
-
-        <div className="flex min-h-[calc(100vh_-_56px)] flex-1 flex-col md:flex-row">
-          <ScrollArea className="mr-2 py-6 md:w-64">
-            <div className="flex h-full">
-              <Sidebar />
-            </div>
-          </ScrollArea>
-          <ScrollArea className="w-full">
-            <div className="flex h-full flex-col">
-              <div className="my-2 flex flex-1 flex-col gap-2 pl-2 pr-4">{children}</div>
-              <Footer />
-            </div>
-          </ScrollArea>
+      <div className="flex h-screen bg-background">
+        <InstanceSidebar />
+        <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
+          <Header instanceId={instanceId} />
+          <main className="min-h-0 flex-1 overflow-y-auto p-6">{children}</main>
         </div>
       </div>
     </InstanceProvider>

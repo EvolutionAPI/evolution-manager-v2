@@ -1,8 +1,8 @@
 import { Smile, Car, Apple, Flag, ClubIcon as Football, Lightbulb } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@evoapi/design-system/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@evoapi/design-system/dropdown-menu";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@evoapi/design-system/tabs";
 
 import { useEmbedColors } from "@/contexts/EmbedColorsContext";
 

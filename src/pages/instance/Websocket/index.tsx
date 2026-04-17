@@ -7,10 +7,11 @@ import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { z } from "zod";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@evoapi/design-system/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormSwitch } from "@/components/ui/form";
-import { Switch } from "@/components/ui/switch";
+import { Switch } from "@evoapi/design-system/switch";
 
+import { IntegrationGuard } from "@/components/integration-disabled";
 import { useInstance } from "@/contexts/InstanceContext";
 
 import { useFetchWebsocket } from "@/lib/queries/websocket/fetchWebsocket";
@@ -32,7 +33,7 @@ function Websocket() {
   const [loading, setLoading] = useState(false);
 
   const { createWebsocket } = useManageWebsocket();
-  const { data: websocket } = useFetchWebsocket({
+  const { data: websocket, error } = useFetchWebsocket({
     instanceName: instance?.name,
     token: instance?.token,
   });
@@ -116,7 +117,7 @@ function Websocket() {
   };
 
   return (
-    <>
+    <IntegrationGuard error={error} name="Websocket" envVar="WEBSOCKET_ENABLED">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
           <div>
@@ -172,7 +173,7 @@ function Websocket() {
           </div>
         </form>
       </Form>
-    </>
+    </IntegrationGuard>
   );
 }
 

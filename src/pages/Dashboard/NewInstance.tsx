@@ -1,14 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { PlusIcon } from "lucide-react";
-import { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Button } from "@evoapi/design-system/button";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { FormInput, FormSelect } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
@@ -32,10 +30,10 @@ const FormSchema = z.object({
   integration: z.enum(["WHATSAPP-BUSINESS", "WHATSAPP-BAILEYS", "EVOLUTION"]),
 });
 
-function NewInstance({ resetTable }: { resetTable: () => void }) {
+function NewInstance({ resetTable, open, onOpenChange }: { resetTable: () => void; open: boolean; onOpenChange: (open: boolean) => void }) {
   const { t } = useTranslation();
   const { createInstance } = useManageInstance();
-  const [open, setOpen] = useState(false);
+  const setOpen = onOpenChange;
   const options = [
     {
       value: "WHATSAPP-BAILEYS",
@@ -98,16 +96,11 @@ function NewInstance({ resetTable }: { resetTable: () => void }) {
   };
 
   if (getProvider() === "go") {
-    return <GoNewInstance resetTable={resetTable} />;
+    return <GoNewInstance resetTable={resetTable} open={open} onOpenChange={onOpenChange} />;
   }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="default" size="sm">
-          {t("instance.button.create")} <PlusIcon size="18" />
-        </Button>
-      </DialogTrigger>
       <DialogContent className="sm:max-w-[650px]" onCloseAutoFocus={onReset}>
         <DialogHeader>
           <DialogTitle>{t("instance.modal.title")}</DialogTitle>

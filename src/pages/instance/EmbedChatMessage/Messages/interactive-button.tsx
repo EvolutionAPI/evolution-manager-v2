@@ -1,7 +1,7 @@
 import { ReplyIcon, CopyIcon, PhoneIcon, SquareArrowOutUpRight } from "lucide-react";
 import { toast } from "react-toastify";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@evoapi/design-system/button";
 
 interface ButtonType {
   name: string;

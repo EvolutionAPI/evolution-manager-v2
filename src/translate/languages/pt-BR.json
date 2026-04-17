@@ -1,15 +1,24 @@
 {
   "dashboard": {
     "title": "Instâncias",
+    "subtitle": "Gerencie suas instâncias WhatsApp",
     "search": "Pesquisar",
     "status": "Status",
     "settings": "Configurações",
-    "instancesNotFound": "Nenhuma instância encontrada"
+    "instancesNotFound": "Nenhuma instância encontrada",
+    "card": {
+      "phone": "Número"
+    },
+    "empty": {
+      "title": "Nenhuma instância encontrada",
+      "description": "Crie sua primeira instância para começar"
+    }
   },
   "button": {
     "delete": "Excluir",
     "deleting": "Excluindo...",
     "cancel": "Cancelar",
+    "refresh": "Atualizar",
     "markAll": "Marcar Todos",
     "unMarkAll": "Desmarcar Todos"
   },
@@ -17,7 +26,8 @@
     "delete": {
       "title": "Excluir Registro",
       "message": "Você está excluindo a instância {{instanceName}}. Tem certeza que deseja continuar?",
-      "messageSingle": "Esta ação não pode ser desfeita."
+      "messageSingle": "Esta ação não pode ser desfeita.",
+      "confirm": "Digite o nome da instância para confirmar:"
     }
   },
   "status": {
@@ -43,6 +53,11 @@
       "portuguese": "Português",
       "spanish": "Espanhol",
       "french": "Francês"
+    },
+    "logout": {
+      "action": "Sair",
+      "title": "Deseja realmente sair?",
+      "description": "Você será desconectado e redirecionado para a tela de login."
     }
   },
   "sidebar": {
@@ -79,6 +94,7 @@
   "login": {
     "title": "Evolution Manager",
     "description": "Por favor, faça login para continuar",
+    "subtitle": "Digite suas credenciais para acessar o sistema",
     "form": {
       "serverUrl": "URL do Servidor",
       "apiKey": "Chave de API Global"
@@ -88,7 +104,8 @@
       "invalidCredentials": "Credenciais inválidas"
     },
     "button": {
-      "login": "Conectar"
+      "login": "Conectar",
+      "connecting": "Conectando..."
     }
   },
   "instance": {
@@ -119,6 +136,7 @@
       "whatsapp": "Conectar com WhatsApp"
     },
     "dashboard": {
+      "subtitle": "Gerencie sua instância",
       "button": {
         "qrcode": {
           "label": "Gerar QR Code",
@@ -129,7 +147,8 @@
           "title": "Faça o pareamento com o WhatsApp"
         },
         "restart": "Reiniciar",
-        "disconnect": "Desconectar"
+        "disconnect": "Desconectar",
+        "sendMessage": "Enviar mensagem"
       },
       "alert": "Para conectar, escaneie o QR Code com o WhatsApp",
       "contacts": "Contatos",
@@ -1415,5 +1434,143 @@
         "title": "Configurações Padrão"
       }
     }
+  },
+  "chat": {
+    "search": "Buscar conversas...",
+    "back": "Voltar",
+    "tabs": {
+      "contacts": "Contatos",
+      "groups": "Grupos"
+    },
+    "count_one": "{{count}} conversa",
+    "count_other": "{{count}} conversas",
+    "empty": {
+      "default": "Nenhuma conversa ainda",
+      "search": "Nenhuma conversa encontrada",
+      "tryAnother": "Tente outro termo",
+      "selectTitle": "Selecione uma conversa",
+      "selectDescription": "Escolha um contato ou grupo na lista ao lado para começar"
+    },
+    "input": {
+      "placeholder": "Digite uma mensagem...",
+      "send": "Enviar"
+    },
+    "date": {
+      "today": "Hoje",
+      "yesterday": "Ontem"
+    }
+  },
+  "common": {
+    "search": "Buscar..."
+  },
+  "sendMessage": {
+    "title": "Enviar Mensagem",
+    "description": "Envie uma mensagem de texto a partir da instância",
+    "validation": {
+      "numberRequired": "Número é obrigatório",
+      "messageRequired": "Mensagem é obrigatória"
+    },
+    "form": {
+      "number": {
+        "label": "Número (com DDI)"
+      },
+      "message": {
+        "label": "Mensagem",
+        "placeholder": "Digite sua mensagem..."
+      }
+    },
+    "button": {
+      "send": "Enviar",
+      "sending": "Enviando..."
+    },
+    "toast": {
+      "success": "Mensagem enviada com sucesso",
+      "error": "Erro ao enviar mensagem",
+      "noToken": "Token da instância não disponível"
+    }
+  },
+  "qrCode": {
+    "title": "Conectar via QR Code",
+    "description": "Escaneie o QR Code para conectar a instância",
+    "generating": "Gerando QR Code...",
+    "waiting": "Aguardando QR Code...",
+    "connected": {
+      "title": "Instância conectada",
+      "description": "A instância {{instanceName}} já está conectada",
+      "connectedAs": "Conectado como"
+    },
+    "pairingCode": {
+      "title": "Conectar por código de pareamento",
+      "label": "Código de pareamento",
+      "generate": "Gerar código",
+      "generating": "Gerando...",
+      "hint": "Informe o número com DDI (ex: 5511999999999) para receber um código de pareamento"
+    },
+    "howTo": {
+      "title": "Como conectar:",
+      "step1": "Abra o WhatsApp no seu celular",
+      "step2": "Toque em Menu ou Configurações",
+      "step3": "Selecione Aparelhos conectados",
+      "step4": "Toque em Conectar um aparelho",
+      "step5": "Aponte a câmera para o QR Code"
+    },
+    "button": {
+      "refresh": "Atualizar QR Code",
+      "refreshing": "Atualizando...",
+      "close": "Fechar"
+    },
+    "toast": {
+      "pairingSuccess": "Código de pareamento gerado",
+      "pairingError": "Erro ao gerar código de pareamento",
+      "refreshSuccess": "QR Code atualizado",
+      "refreshError": "Erro ao atualizar QR Code"
+    }
+  },
+  "newInstance": {
+    "title": "Nova Instância",
+    "description": "Crie uma nova instância para conectar ao WhatsApp",
+    "validation": {
+      "nameMin": "O nome deve ter pelo menos 3 caracteres",
+      "nameMax": "O nome deve ter no máximo 50 caracteres",
+      "nameFormat": "O nome pode conter apenas letras, números, hífen e underline"
+    },
+    "form": {
+      "name": {
+        "label": "Nome da Instância",
+        "placeholder": "minha-instancia",
+        "hint": "Use letras, números, hífen (-) ou underline (_)"
+      },
+      "token": {
+        "label": "Token (opcional)",
+        "placeholder": "Deixe em branco para gerar automaticamente",
+        "hint": "Se não informado, um UUID será gerado automaticamente"
+      }
+    },
+    "proxy": {
+      "title": "Configurar Proxy (opcional)",
+      "host": {
+        "label": "Host",
+        "placeholder": "proxy.exemplo.com"
+      },
+      "port": {
+        "label": "Porta"
+      },
+      "username": {
+        "label": "Usuário",
+        "placeholder": "usuario"
+      },
+      "password": {
+        "label": "Senha",
+        "placeholder": "••••••••"
+      }
+    },
+    "button": {
+      "create": "Criar Instância",
+      "creating": "Criando..."
+    }
+  },
+  "table": {
+    "loading": "Carregando...",
+    "noResults": "Nenhum resultado encontrado!"
   }
 }

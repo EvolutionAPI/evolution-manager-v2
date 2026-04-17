@@ -4,20 +4,30 @@
     "search": "Rechercher",
     "status": "Statut",
     "settings": "Paramètres",
-    "instancesNotFound": "Aucune instance trouvée"
+    "instancesNotFound": "Aucune instance trouvée",
+    "subtitle": "Gérez vos instances WhatsApp",
+    "card": {
+      "phone": "Numéro"
+    },
+    "empty": {
+      "title": "Aucune instance trouvée",
+      "description": "Créez votre première instance pour commencer"
+    }
   },
   "button": {
     "delete": "Supprimer",
     "deleting": "Suppression...",
     "cancel": "Annuler",
     "markAll": "Marquer Tous",
-    "unMarkAll": "Démarquer Tous"
+    "unMarkAll": "Démarquer Tous",
+    "refresh": "Actualiser"
   },
   "modal": {
     "delete": {
       "title": "Supprimer l'Enregistrement",
       "message": "Vous êtes en train de supprimer l'instance {{instanceName}}. Êtes-vous sûr de vouloir continuer ?",
-      "messageSingle": "Cette action est irréversible."
+      "messageSingle": "Cette action est irréversible.",
+      "confirm": "Tapez le nom de l'instance pour confirmer:"
     }
   },
   "status": {
@@ -42,6 +52,11 @@
       "english": "Anglais",
       "portuguese": "Portugais",
       "french": "Français"
+    },
+    "logout": {
+      "action": "Déconnexion",
+      "title": "Êtes-vous sûr de vouloir vous déconnecter ?",
+      "description": "Vous serez déconnecté et redirigé vers l'écran de connexion."
     }
   },
   "sidebar": {
@@ -87,8 +102,10 @@
       "invalidCredentials": "Identifiants invalides"
     },
     "button": {
-      "login": "Se connecter"
-    }
+      "login": "Se connecter",
+      "connecting": "Connexion..."
+    },
+    "subtitle": "Entrez vos identifiants pour accéder au système"
   },
   "instance": {
     "modal": {
@@ -128,12 +145,14 @@
           "title": "Appairez avec WhatsApp"
         },
         "restart": "Redémarrer",
-        "disconnect": "Déconnecter"
+        "disconnect": "Déconnecter",
+        "sendMessage": "Envoyer un message"
       },
       "alert": "Pour vous connecter, scannez le Code QR avec WhatsApp",
       "contacts": "Contacts",
       "chats": "Chats",
-      "messages": "Messages"
+      "messages": "Messages",
+      "subtitle": "Gérez votre instance"
     }
   },
   "settings": {
@@ -1414,5 +1433,143 @@
         "title": "Paramètres par Défaut"
       }
     }
+  },
+  "chat": {
+    "search": "Rechercher des conversations...",
+    "back": "Retour",
+    "tabs": {
+      "contacts": "Contacts",
+      "groups": "Groupes"
+    },
+    "count_one": "{{count}} conversation",
+    "count_other": "{{count}} conversations",
+    "empty": {
+      "default": "Aucune conversation pour le moment",
+      "search": "Aucune conversation trouvée",
+      "tryAnother": "Essayez un autre terme",
+      "selectTitle": "Sélectionnez une conversation",
+      "selectDescription": "Choisissez un contact ou un groupe dans la liste pour commencer"
+    },
+    "input": {
+      "placeholder": "Tapez un message...",
+      "send": "Envoyer"
+    },
+    "date": {
+      "today": "Aujourd'hui",
+      "yesterday": "Hier"
+    }
+  },
+  "common": {
+    "search": "Rechercher..."
+  },
+  "sendMessage": {
+    "title": "Envoyer un Message",
+    "description": "Envoyez un message texte depuis l'instance",
+    "validation": {
+      "numberRequired": "Le numéro est obligatoire",
+      "messageRequired": "Le message est obligatoire"
+    },
+    "form": {
+      "number": {
+        "label": "Numéro (avec indicatif pays)"
+      },
+      "message": {
+        "label": "Message",
+        "placeholder": "Saisissez votre message..."
+      }
+    },
+    "button": {
+      "send": "Envoyer",
+      "sending": "Envoi..."
+    },
+    "toast": {
+      "success": "Message envoyé avec succès",
+      "error": "Erreur lors de l'envoi du message",
+      "noToken": "Jeton d'instance non disponible"
+    }
+  },
+  "qrCode": {
+    "title": "Connecter via QR Code",
+    "description": "Scannez le QR Code pour connecter l'instance",
+    "generating": "Génération du QR Code...",
+    "waiting": "En attente du QR Code...",
+    "connected": {
+      "title": "Instance connectée",
+      "description": "L'instance {{instanceName}} est déjà connectée",
+      "connectedAs": "Connecté en tant que"
+    },
+    "pairingCode": {
+      "title": "Connecter avec code de jumelage",
+      "label": "Code de jumelage",
+      "generate": "Générer le code",
+      "generating": "Génération...",
+      "hint": "Entrez le numéro avec indicatif pays (ex: 5511999999999) pour recevoir un code de jumelage"
+    },
+    "howTo": {
+      "title": "Comment se connecter :",
+      "step1": "Ouvrez WhatsApp sur votre téléphone",
+      "step2": "Appuyez sur Menu ou Paramètres",
+      "step3": "Sélectionnez Appareils connectés",
+      "step4": "Appuyez sur Connecter un appareil",
+      "step5": "Pointez votre caméra sur le QR Code"
+    },
+    "button": {
+      "refresh": "Actualiser le QR Code",
+      "refreshing": "Actualisation...",
+      "close": "Fermer"
+    },
+    "toast": {
+      "pairingSuccess": "Code de jumelage généré",
+      "pairingError": "Erreur lors de la génération du code de jumelage",
+      "refreshSuccess": "QR Code actualisé",
+      "refreshError": "Erreur lors de l'actualisation du QR Code"
+    }
+  },
+  "newInstance": {
+    "title": "Nouvelle Instance",
+    "description": "Créez une nouvelle instance pour vous connecter à WhatsApp",
+    "validation": {
+      "nameMin": "Le nom doit contenir au moins 3 caractères",
+      "nameMax": "Le nom doit contenir au maximum 50 caractères",
+      "nameFormat": "Le nom ne peut contenir que des lettres, chiffres, tirets et underscores"
+    },
+    "form": {
+      "name": {
+        "label": "Nom de l'Instance",
+        "placeholder": "mon-instance",
+        "hint": "Utilisez des lettres, chiffres, tiret (-) ou underscore (_)"
+      },
+      "token": {
+        "label": "Jeton (optionnel)",
+        "placeholder": "Laissez vide pour générer automatiquement",
+        "hint": "Si non fourni, un UUID sera généré automatiquement"
+      }
+    },
+    "proxy": {
+      "title": "Configurer Proxy (optionnel)",
+      "host": {
+        "label": "Hôte",
+        "placeholder": "proxy.exemple.com"
+      },
+      "port": {
+        "label": "Port"
+      },
+      "username": {
+        "label": "Utilisateur",
+        "placeholder": "utilisateur"
+      },
+      "password": {
+        "label": "Mot de passe",
+        "placeholder": "••••••••"
+      }
+    },
+    "button": {
+      "create": "Créer l'Instance",
+      "creating": "Création..."
+    }
+  },
+  "table": {
+    "loading": "Chargement...",
+    "noResults": "Aucun résultat trouvé !"
   }
 }

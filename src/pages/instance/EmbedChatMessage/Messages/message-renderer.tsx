@@ -1,6 +1,6 @@
 import { FileIcon } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@evoapi/design-system/button";
 
 import { Message } from "@/types/evolution.types";
 

@@ -7,10 +7,11 @@ import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { z } from "zod";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@evoapi/design-system/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormSwitch } from "@/components/ui/form";
-import { Switch } from "@/components/ui/switch";
+import { Switch } from "@evoapi/design-system/switch";
 
+import { IntegrationGuard } from "@/components/integration-disabled";
 import { useInstance } from "@/contexts/InstanceContext";
 
 import { useFetchSqs } from "@/lib/queries/sqs/fetchSqs";
@@ -32,7 +33,7 @@ function Sqs() {
   const [loading, setLoading] = useState(false);
 
   const { createSqs } = useManageSqs();
-  const { data: sqs } = useFetchSqs({
+  const { data: sqs, error } = useFetchSqs({
     instanceName: instance?.name,
     token: instance?.token,
   });
@@ -115,7 +116,7 @@ function Sqs() {
   };
 
   return (
-    <>
+    <IntegrationGuard error={error} name="SQS" envVar="SQS_ENABLED">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
           <div>
@@ -170,7 +171,7 @@ function Sqs() {
           </div>
         </form>
       </Form>
-    </>
+    </IntegrationGuard>
   );
 }
 

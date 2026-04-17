@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 import { copyToClipboard } from "@/utils/copy-to-clipboard";
 
-import { Button } from "./ui/button";
+import { Button } from "@evoapi/design-system/button";
 
 export function InstanceToken({ token, className }: { token: string; className?: string }) {
   const [visible, setVisible] = useState(false);

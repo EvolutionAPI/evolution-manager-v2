@@ -3,11 +3,11 @@ import { useForm, FormProvider } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@evoapi/design-system/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { FormInput, FormSelect, FormSwitch } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
+import { Separator } from "@evoapi/design-system/separator";
 
 import { SessionsFlowise } from "./SessionsFlowise";
 

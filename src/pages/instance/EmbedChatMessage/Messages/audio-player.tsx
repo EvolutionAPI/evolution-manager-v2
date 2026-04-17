@@ -1,7 +1,7 @@
 import { Play, Pause } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@evoapi/design-system/button";
 // Removed slider import - using native range input
 
 interface AudioPlayerProps {

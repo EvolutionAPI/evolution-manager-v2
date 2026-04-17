@@ -1,11 +1,12 @@
 import { CheckCircle2, KeyRound, QrCode, RefreshCw, X } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@evoapi/design-system/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Label } from "@evoapi/design-system/label";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
@@ -17,6 +18,7 @@ interface GoQrCodeModalProps {
 }
 
 export function GoQrCodeModal({ open, onOpenChange }: GoQrCodeModalProps) {
+  const { t } = useTranslation();
   const { instance, reloadInstance } = useInstance();
   const { connect } = useManageInstance();
 
@@ -51,14 +53,14 @@ export function GoQrCodeModal({ open, onOpenChange }: GoQrCodeModalProps) {
       setBase64((data as { base64?: string })?.base64 ?? "");
       setPairingCode((data as { pairingCode?: string })?.pairingCode ?? "");
       await reloadInstance();
-      toast.success("Pairing code gerado!");
+      toast.success(t("qrCode.toast.pairingSuccess"));
     } catch (error) {
       console.error("Pairing error:", error);
-      toast.error("Erro ao gerar pairing code");
+      toast.error(t("qrCode.toast.pairingError"));
     } finally {
       setPairingLoading(false);
     }
-  }, [connect, instance, phone, reloadInstance]);
+  }, [connect, instance, phone, reloadInstance, t]);
 
   const pollRefresh = useCallback(async () => {
     await reloadInstance();
@@ -81,9 +83,9 @@ export function GoQrCodeModal({ open, onOpenChange }: GoQrCodeModalProps) {
   const handleRefresh = async () => {
     try {
       await fullConnect();
-      toast.success("QR Code atualizado!");
+      toast.success(t("qrCode.toast.refreshSuccess"));
     } catch {
-      toast.error("Erro ao atualizar QR Code");
+      toast.error(t("qrCode.toast.refreshError"));
     }
   };
 
@@ -103,9 +105,11 @@ export function GoQrCodeModal({ open, onOpenChange }: GoQrCodeModalProps) {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-green-500">
               <CheckCircle2 className="h-5 w-5" />
-              Conectado com Sucesso!
+              {t("qrCode.connected.title")}
             </DialogTitle>
-            <DialogDescription>A instância {instance.name} foi conectada ao WhatsApp.</DialogDescription>
+            <DialogDescription>
+              {t("qrCode.connected.description", { instanceName: instance.name })}
+            </DialogDescription>
           </DialogHeader>
 
           <div className="flex flex-col items-center gap-4 py-6">
@@ -114,7 +118,7 @@ export function GoQrCodeModal({ open, onOpenChange }: GoQrCodeModalProps) {
             </div>
             {instance.profileName && (
               <div className="text-center">
-                <p className="text-sm text-muted-foreground">Conectado como</p>
+                <p className="text-sm text-muted-foreground">{t("qrCode.connected.connectedAs")}</p>
                 <p className="text-lg font-semibold">{instance.profileName}</p>
               </div>
             )}
@@ -122,7 +126,7 @@ export function GoQrCodeModal({ open, onOpenChange }: GoQrCodeModalProps) {
 
           <div className="flex justify-end">
             <Button onClick={handleClose} className="w-full sm:w-auto">
-              Fechar
+              {t("qrCode.button.close")}
             </Button>
           </div>
         </DialogContent>
@@ -136,10 +140,10 @@ export function GoQrCodeModal({ open, onOpenChange }: GoQrCodeModalProps) {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <QrCode className="h-5 w-5 text-primary" />
-            Conectar WhatsApp
+            {t("qrCode.title")}
           </DialogTitle>
           <DialogDescription>
-            Escaneie o QR Code abaixo com seu WhatsApp para conectar a instância <strong>{instance.name}</strong>
+            {t("qrCode.description")} <strong>{instance.name}</strong>
           </DialogDescription>
         </DialogHeader>
 
@@ -153,42 +157,42 @@ export function GoQrCodeModal({ open, onOpenChange }: GoQrCodeModalProps) {
               <div className="flex h-64 w-64 items-center justify-center rounded-lg border-2 border-dashed border-border">
                 <div className="text-center">
                   <QrCode className="mx-auto h-12 w-12 text-muted-foreground/40" />
-                  <p className="mt-2 text-sm text-muted-foreground">{loading ? "Gerando QR Code..." : "Aguardando QR Code..."}</p>
+                  <p className="mt-2 text-sm text-muted-foreground">{loading ? t("qrCode.generating") : t("qrCode.waiting")}</p>
                 </div>
               </div>
             )}
 
             {pairingCode && (
               <div className="w-full rounded-lg bg-muted p-3 text-center">
-                <p className="text-xs text-muted-foreground">Código de Pareamento</p>
+                <p className="text-xs text-muted-foreground">{t("qrCode.pairingCode.label")}</p>
                 <p className="mt-1 font-mono text-lg font-semibold tracking-widest">{pairingCode}</p>
               </div>
             )}
           </div>
 
           <div className="rounded-lg bg-muted p-4">
-            <p className="text-sm font-medium">Como conectar:</p>
+            <p className="text-sm font-medium">{t("qrCode.howTo.title")}</p>
             <ol className="mt-2 space-y-1 text-sm text-muted-foreground">
-              <li>1. Abra o WhatsApp no seu celular</li>
-              <li>2. Toque em Menu ou Configurações</li>
-              <li>3. Toque em Dispositivos conectados</li>
-              <li>4. Toque em Conectar um dispositivo</li>
-              <li>5. Aponte seu celular para esta tela para capturar o código</li>
+              <li>1. {t("qrCode.howTo.step1")}</li>
+              <li>2. {t("qrCode.howTo.step2")}</li>
+              <li>3. {t("qrCode.howTo.step3")}</li>
+              <li>4. {t("qrCode.howTo.step4")}</li>
+              <li>5. {t("qrCode.howTo.step5")}</li>
             </ol>
           </div>
 
           <div className="space-y-2 border-t border-border pt-4">
             <Label htmlFor="pairing-phone" className="flex items-center gap-2 text-sm">
               <KeyRound className="h-4 w-4" />
-              Conectar por código (alternativa ao QR)
+              {t("qrCode.pairingCode.title")}
             </Label>
             <div className="flex gap-2">
               <Input id="pairing-phone" type="tel" placeholder="5511999999999" value={phone} onChange={(e) => setPhone(e.target.value)} disabled={pairingLoading} />
               <Button type="button" variant="outline" onClick={requestPairing} disabled={!phone.trim() || pairingLoading}>
-                {pairingLoading ? "Gerando..." : "Gerar código"}
+                {pairingLoading ? t("qrCode.pairingCode.generating") : t("qrCode.pairingCode.generate")}
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground">Digite o número com DDI. No WhatsApp, toque em "Conectar com código" e insira o pairing code gerado.</p>
+            <p className="text-xs text-muted-foreground">{t("qrCode.pairingCode.hint")}</p>
           </div>
 
           <div className="flex gap-2">
@@ -196,12 +200,12 @@ export function GoQrCodeModal({ open, onOpenChange }: GoQrCodeModalProps) {
               {loading ? (
                 <>
                   <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                  Atualizando...
+                  {t("qrCode.button.refreshing")}
                 </>
               ) : (
                 <>
                   <RefreshCw className="mr-2 h-4 w-4" />
-                  Atualizar QR Code
+                  {t("qrCode.button.refresh")}
                 </>
               )}
             </Button>

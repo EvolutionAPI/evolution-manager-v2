@@ -7,10 +7,11 @@ import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { z } from "zod";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@evoapi/design-system/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormSwitch } from "@/components/ui/form";
-import { Switch } from "@/components/ui/switch";
+import { Switch } from "@evoapi/design-system/switch";
 
+import { IntegrationGuard } from "@/components/integration-disabled";
 import { useInstance } from "@/contexts/InstanceContext";
 
 import { useFetchRabbitmq } from "@/lib/queries/rabbitmq/fetchRabbitmq";
@@ -32,7 +33,7 @@ function Rabbitmq() {
   const [loading, setLoading] = useState(false);
 
   const { createRabbitmq } = useManageRabbitmq();
-  const { data: rabbitmq } = useFetchRabbitmq({
+  const { data: rabbitmq, error } = useFetchRabbitmq({
     instanceName: instance?.name,
     token: instance?.token,
   });
@@ -116,7 +117,7 @@ function Rabbitmq() {
   };
 
   return (
-    <>
+    <IntegrationGuard error={error} name="RabbitMQ" envVar="RABBITMQ_ENABLED">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
           <div>
@@ -171,7 +172,7 @@ function Rabbitmq() {
           </div>
         </form>
       </Form>
-    </>
+    </IntegrationGuard>
   );
 }
 

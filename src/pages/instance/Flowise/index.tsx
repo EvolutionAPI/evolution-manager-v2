@@ -2,11 +2,12 @@
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@evoapi/design-system/button";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
-import { Separator } from "@/components/ui/separator";
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@evoapi/design-system/resizable";
+import { Separator } from "@evoapi/design-system/separator";
 
+import { IntegrationGuard } from "@/components/integration-disabled";
 import { useInstance } from "@/contexts/InstanceContext";
 
 import { useFindFlowise } from "@/lib/queries/flowise/findFlowise";
@@ -29,6 +30,7 @@ function Flowise() {
     data: bots,
     isLoading,
     refetch,
+    error,
   } = useFindFlowise({
     instanceName: instance?.name,
   });
@@ -47,6 +49,7 @@ function Flowise() {
 
   return (
     <main className="pt-5">
+      <IntegrationGuard error={error} name="Flowise" envVar="FLOWISE_ENABLED">
       <div className="mb-1 flex items-center justify-between">
         <h3 className="text-lg font-medium">{t("flowise.title")}</h3>
         <div className="flex items-center justify-end gap-2">
@@ -57,7 +60,7 @@ function Flowise() {
       </div>
       <Separator className="my-4" />
       <ResizablePanelGroup direction={isMD ? "horizontal" : "vertical"}>
-        <ResizablePanel defaultSize={35} className="pr-4">
+        <ResizablePanel defaultSize={flowiseId ? 35 : 100} className="pr-4">
           <div className="flex flex-col gap-3">
             {isLoading ? (
               <LoadingSpinner />
@@ -89,6 +92,7 @@ function Flowise() {
           </>
         )}
       </ResizablePanelGroup>
+      </IntegrationGuard>
     </main>
   );
 }

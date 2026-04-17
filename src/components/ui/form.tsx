@@ -1,16 +1,15 @@
 import * as LabelPrimitive from "@radix-ui/react-label";
-import { Slot } from "@radix-ui/react-slot";
+import { Label } from "@evoapi/design-system/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@evoapi/design-system/select";
+import { Switch } from "@evoapi/design-system/switch";
 import * as React from "react";
 import { Controller, ControllerProps, FieldPath, FieldValues, FormProvider, useFormContext } from "react-hook-form";
 import { WithContext as ReactTags, SEPARATORS } from "react-tag-input";
 
-import { Label } from "@/components/ui/label";
-
 import { cn } from "@/lib/utils";
 
-import { defaultInputClassNames } from "./input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./select";
-import { Switch } from "./switch";
+const defaultInputClassNames =
+  "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50";
 
 const Form = FormProvider;
 
@@ -75,11 +74,16 @@ const FormLabel = React.forwardRef<React.ElementRef<typeof LabelPrimitive.Root>,
 });
 FormLabel.displayName = "FormLabel";
 
-const FormControl = React.forwardRef<React.ElementRef<typeof Slot>, React.ComponentPropsWithoutRef<typeof Slot>>(({ ...props }, ref) => {
+const FormControl = ({ children }: { children: React.ReactNode }) => {
   const { error, formItemId, formDescriptionId, formMessageId } = useFormField();
 
-  return <Slot ref={ref} id={formItemId} aria-describedby={!error ? `${formDescriptionId}` : `${formDescriptionId} ${formMessageId}`} aria-invalid={!!error} {...props} />;
-});
+  if (!React.isValidElement(children)) return null;
+  return React.cloneElement(children as React.ReactElement, {
+    id: formItemId,
+    "aria-describedby": !error ? `${formDescriptionId}` : `${formDescriptionId} ${formMessageId}`,
+    "aria-invalid": !!error,
+  });
+};
 FormControl.displayName = "FormControl";
 
 const FormDescription = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLParagraphElement>>(({ className, ...props }, ref) => {
@@ -136,12 +140,12 @@ const FormInput = <TFieldValues extends FieldValues = FieldValues, TName extends
             {React.isValidElement(children) &&
               React.cloneElement(children as any, {
                 // eslint-disable-line
-                ...field,
+                name: field.name,
                 value: field.value ?? "",
+                onChange: field.onChange,
+                onBlur: field.onBlur,
                 required,
                 readOnly,
-                checked: field.value,
-                onCheckedChange: field.onChange,
               })}
           </FormControl>
           <FormMessage />
@@ -172,16 +176,14 @@ const FormSwitch = <TFieldValues extends FieldValues = FieldValues, TName extend
       name={name}
       render={({ field }) => (
         <FormItem className={cn("flex items-center gap-3", reverse && "flex-row-reverse justify-end", className)}>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-1 flex-col gap-1">
             {label && (
-              <FormLabel>
-                <p className="break-all">
-                  {label}
-                  {required && <span className="ml-2 text-rose-600">*</span>}
-                </p>
-                {helper && <FormDescription className="mt-2">{helper}</FormDescription>}
+              <FormLabel className="break-all">
+                {label}
+                {required && <span className="ml-2 text-rose-600">*</span>}
               </FormLabel>
             )}
+            {helper && <FormDescription className="text-xs">{helper}</FormDescription>}
           </div>
           <FormControl>
             <Switch checked={field.value} onCheckedChange={field.onChange} required={required} />

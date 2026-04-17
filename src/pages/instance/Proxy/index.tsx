@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { z } from "zod";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@evoapi/design-system/button";
 import { Form, FormInput, FormSwitch } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 

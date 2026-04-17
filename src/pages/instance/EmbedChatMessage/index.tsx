@@ -10,9 +10,9 @@ import { useSearchParams, useNavigate, useParams } from "react-router-dom";
 // Importações de componentes da aplicação
 import { toast } from "react-toastify";
 
-import { Button } from "@/components/ui/button";
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@evoapi/design-system/button";
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@evoapi/design-system/resizable";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@evoapi/design-system/tabs";
 
 // Importações de contextos
 import { useEmbedColors } from "@/contexts/EmbedColorsContext";

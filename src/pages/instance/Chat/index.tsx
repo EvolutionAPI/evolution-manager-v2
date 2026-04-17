@@ -1,268 +1,270 @@
 import "./style.css";
-import { User, MessageCircle, PlusIcon } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-
-import { Button } from "@/components/ui/button";
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@evoapi/design-system/avatar";
+import { Button } from "@evoapi/design-system/button";
+import { Input } from "@/components/ui/input";
+import { ArrowLeft, MessageCircle, Search, User, Users } from "lucide-react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
 import { useFindChats } from "@/lib/queries/chat/findChats";
 import { getToken, TOKEN_ID } from "@/lib/queries/token";
-
-import { Chat as ChatType } from "@/types/evolution.types";
-
-import React from "react";
-import { useMediaQuery } from "@/utils/useMediaQuery";
+import { cn } from "@/lib/utils";
 
 import { connectSocket, disconnectSocket } from "@/services/websocket/socket";
 
+import { Chat as ChatType } from "@/types/evolution.types";
+
+import { useMediaQuery } from "@/utils/useMediaQuery";
+
 import { Messages } from "./messages";
 
-// Simple utility function
-const formatJid = (remoteJid: string): string => {
-  return remoteJid.split("@")[0];
-};
+const formatJid = (remoteJid: string): string => remoteJid.split("@")[0];
+
+type ChatKind = "contacts" | "groups";
 
 function Chat() {
+  const { t } = useTranslation();
   const isMD = useMediaQuery("(min-width: 768px)");
   const lastMessageRef = useRef<HTMLDivElement | null>(null);
   const [textareaHeight] = useState("auto");
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const { instance } = useInstance();
 
-  // Local state for real-time chats (to supplement React Query data)
   const [realtimeChats, setRealtimeChats] = useState<ChatType[]>([]);
+  const [search, setSearch] = useState("");
+  const [kind, setKind] = useState<ChatKind>("contacts");
 
-  const { data: chats, isSuccess } = useFindChats({
-    instanceName: instance?.name,
-  });
+  const { data: chats } = useFindChats({ instanceName: instance?.name });
 
-  // Combine React Query chats with real-time updates
-  const allChats = React.useMemo(() => {
+  const allChats = useMemo(() => {
     if (!chats) return realtimeChats;
-
-    // Merge chats from React Query with real-time updates
-    const chatMap = new Map();
-
-    // First add all chats from React Query
-    chats.forEach((chat) => chatMap.set(chat.remoteJid, chat));
-
-    // Then add/update with real-time chats
-    realtimeChats.forEach((chat) => {
-      const existing = chatMap.get(chat.remoteJid);
-      if (existing) {
-        // Update existing chat with newer data
-        chatMap.set(chat.remoteJid, { ...existing, ...chat });
-      } else {
-        // Add new chat from real-time updates
-        chatMap.set(chat.remoteJid, chat);
-      }
+    const map = new Map<string, ChatType>();
+    chats.forEach((c) => map.set(c.remoteJid, c));
+    realtimeChats.forEach((c) => {
+      const existing = map.get(c.remoteJid);
+      map.set(c.remoteJid, existing ? { ...existing, ...c } : c);
     });
-
-    return Array.from(chatMap.values());
+    return Array.from(map.values());
   }, [chats, realtimeChats]);
 
-  const { instanceId, remoteJid } = useParams<{
-    instanceId: string;
-    remoteJid: string;
-  }>();
-
+  const { instanceId, remoteJid } = useParams<{ instanceId: string; remoteJid: string }>();
   const navigate = useNavigate();
 
-  // Add websocket functionality for real-time updates
   useEffect(() => {
     if (!instance?.name) return;
-
     const serverUrl = getToken(TOKEN_ID.API_URL);
-    if (!serverUrl) {
-      console.error("API URL not found in localStorage");
-      return;
-    }
+    if (!serverUrl) return;
 
     const socket = connectSocket(serverUrl);
 
-    // Function to update chats from websocket events
-    const updateChatsFromWebsocket = (_eventType: string, data: any) => {
-      if (!instance) return;
+    const handle = (data: { instance?: string; data?: { key?: { remoteJid?: string; profilePictureUrl?: string }; pushName?: string } }) => {
+      if (!instance || data.instance !== instance.name) return;
+      const jid = data?.data?.key?.remoteJid;
+      if (!jid) return;
 
-      if (data.instance !== instance.name) {
-        return;
-      }
-
-      const messageRemoteJid = data?.data?.key?.remoteJid;
-      if (!messageRemoteJid) {
-        return;
-      }
-
-      setRealtimeChats((prevChats) => {
-        const existingChatIndex = prevChats.findIndex((chat) => chat.remoteJid === messageRemoteJid);
-
-        // Create or update chat object
-        const chatObject: ChatType = {
-          id: messageRemoteJid,
-          remoteJid: messageRemoteJid,
-          pushName: data?.data?.pushName || formatJid(messageRemoteJid),
+      setRealtimeChats((prev) => {
+        const idx = prev.findIndex((c) => c.remoteJid === jid);
+        const obj: ChatType = {
+          id: jid,
+          remoteJid: jid,
+          pushName: data?.data?.pushName || formatJid(jid),
           profilePicUrl: data?.data?.key?.profilePictureUrl || "",
-          // Add other required fields
-          ...data?.data,
+          ...(data?.data as Partial<ChatType>),
         };
-
-        if (existingChatIndex !== -1) {
-          // Update existing chat
-          const updatedChats = [...prevChats];
-          updatedChats[existingChatIndex] = {
-            ...updatedChats[existingChatIndex],
-            ...chatObject,
-          };
-          return updatedChats;
-        } else {
-          // Add new chat
-          return [...prevChats, chatObject];
+        if (idx !== -1) {
+          const next = [...prev];
+          next[idx] = { ...next[idx], ...obj };
+          return next;
         }
+        return [...prev, obj];
       });
     };
 
-    // Set up event listeners
-    socket.on("messages.upsert", (data: any) => {
-      updateChatsFromWebsocket("messages.upsert", data);
-    });
-
-    socket.on("send.message", (data: any) => {
-      updateChatsFromWebsocket("send.message", data);
-    });
-
+    socket.on("messages.upsert", handle);
+    socket.on("send.message", handle);
     socket.connect();
 
-    // Cleanup function
     return () => {
       socket.off("messages.upsert");
       socket.off("send.message");
       disconnectSocket(socket);
     };
-  }, [instance?.name]);
+  }, [instance, instance?.name]);
 
   const scrollToBottom = useCallback(() => {
-    if (lastMessageRef.current) {
-      lastMessageRef.current.scrollIntoView({});
-    }
+    lastMessageRef.current?.scrollIntoView({});
   }, []);
 
   const handleTextareaChange = () => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      const scrollHeight = textareaRef.current.scrollHeight;
-      const lineHeight = parseInt(getComputedStyle(textareaRef.current).lineHeight);
-      const maxHeight = lineHeight * 10;
-      textareaRef.current.style.height = `${Math.min(scrollHeight, maxHeight)}px`;
-    }
+    if (!textareaRef.current) return;
+    textareaRef.current.style.height = "auto";
+    const scrollHeight = textareaRef.current.scrollHeight;
+    const lineHeight = parseInt(getComputedStyle(textareaRef.current).lineHeight);
+    const maxHeight = lineHeight * 10;
+    textareaRef.current.style.height = `${Math.min(scrollHeight, maxHeight)}px`;
   };
 
-  useEffect(() => {
-    if (isSuccess) {
-      scrollToBottom();
-    }
-  }, [isSuccess, scrollToBottom]);
+  const handleChat = (jid: string) => navigate(`/manager/instance/${instanceId}/chat/${jid}`);
 
-  const handleChat = (id: string) => {
-    navigate(`/manager/instance/${instanceId}/chat/${id}`);
-  };
+  const handleBack = () => navigate(`/manager/instance/${instanceId}/chat`);
+
+  const visibleChats = useMemo(() => {
+    const isContacts = kind === "contacts";
+    const filtered = allChats.filter((c) =>
+      isContacts ? c.remoteJid.includes("@s.whatsapp.net") : c.remoteJid.includes("@g.us"),
+    );
+    if (!search.trim()) return filtered;
+    const q = search.toLowerCase();
+    return filtered.filter(
+      (c) =>
+        (c.pushName && c.pushName.toLowerCase().includes(q)) ||
+        c.remoteJid.toLowerCase().includes(q),
+    );
+  }, [allChats, kind, search]);
+
+  const showSidebar = !remoteJid || isMD;
+  const showChat = !!remoteJid;
 
   return (
-    <div className="h-[calc(100vh-160px)] overflow-hidden">
-      <ResizablePanelGroup direction={isMD ? "horizontal" : "vertical"} className="h-full">
-        <ResizablePanel defaultSize={20}>
-          <div className="hidden h-full flex-col bg-background text-foreground md:flex">
-            <div className="flex-shrink-0 p-2">
-              <Button variant="ghost" className="w-full justify-start gap-2 px-2 text-left">
-                <div className="flex h-7 w-7 items-center justify-center rounded-full">
-                  <MessageCircle className="h-4 w-4" />
-                </div>
-                <div className="grow overflow-hidden text-ellipsis whitespace-nowrap text-sm">Chat</div>
-                <PlusIcon className="h-4 w-4" />
-              </Button>
-            </div>
-            <Tabs defaultValue="contacts" className="flex flex-col flex-1 min-h-0">
-              <TabsList className="tabs-chat flex-shrink-0">
-                <TabsTrigger value="contacts">Contatos</TabsTrigger>
-                <TabsTrigger value="groups">Grupos</TabsTrigger>
-              </TabsList>
-              <TabsContent value="contacts" className="flex-1 overflow-hidden">
-                <div className="h-full overflow-auto">
-                  <div className="grid gap-1 p-2 text-foreground">
-                    <div className="px-2 text-xs font-medium text-muted-foreground">Contatos</div>
-                    {chats?.map(
-                      (chat: ChatType) =>
-                        chat.remoteJid.includes("@s.whatsapp.net") && (
-                          <Link
-                            key={chat.id}
-                            to="#"
-                            onClick={() => handleChat(chat.remoteJid)}
-                            className={`chat-item flex items-center overflow-hidden truncate whitespace-nowrap rounded-md border-b border-gray-600/50 p-2 text-sm transition-colors hover:bg-muted/50 ${
-                              remoteJid === chat.remoteJid ? "active" : ""
-                            }`}>
-                            <span className="chat-avatar mr-2">
-                              <Avatar className="h-8 w-8">
-                                <AvatarImage src={chat.profilePicUrl} alt={chat.pushName || chat.remoteJid.split("@")[0]} />
-                                <AvatarFallback className="bg-slate-700 text-slate-300 border border-slate-600">
-                                  <User className="h-5 w-5" />
-                                </AvatarFallback>
-                              </Avatar>
-                            </span>
-                            <div className="min-w-0 flex-1">
-                              <span className="chat-title block font-medium">{chat.pushName || chat.remoteJid.split("@")[0]}</span>
-                              <span className="chat-description block text-xs text-gray-500">{chat.remoteJid.split("@")[0]}</span>
-                            </div>
-                          </Link>
-                        ),
-                    )}
-                  </div>
-                </div>
-              </TabsContent>
-              <TabsContent value="groups" className="flex-1 overflow-hidden">
-                <div className="h-full overflow-auto">
-                  <div className="grid gap-1 p-2 text-foreground">
-                    {allChats?.map(
-                      (chat: ChatType) =>
-                        chat.remoteJid.includes("@g.us") && (
-                          <Link
-                            key={chat.id}
-                            to="#"
-                            onClick={() => handleChat(chat.remoteJid)}
-                            className={`chat-item flex items-center overflow-hidden truncate whitespace-nowrap rounded-md border-b border-gray-600/50 p-2 text-sm transition-colors hover:bg-muted/50 ${
-                              remoteJid === chat.remoteJid ? "active" : ""
-                            }`}>
-                            <span className="chat-avatar mr-2">
-                              <Avatar className="h-8 w-8">
-                                <AvatarImage src={chat.profilePicUrl} alt={chat.pushName || chat.remoteJid.split("@")[0]} />
-                                <AvatarFallback className="bg-slate-700 text-slate-300 border border-slate-600">
-                                  <User className="h-5 w-5" />
-                                </AvatarFallback>
-                              </Avatar>
-                            </span>
-                            <div className="min-w-0 flex-1">
-                              <span className="chat-title block font-medium">{chat.pushName || chat.remoteJid.split("@")[0]}</span>
-                              <span className="chat-description block text-xs text-gray-500">{chat.remoteJid}</span>
-                            </div>
-                          </Link>
-                        ),
-                    )}
-                  </div>
-                </div>
-              </TabsContent>
-            </Tabs>
+    <div className="flex h-full w-full overflow-hidden rounded-lg border">
+      <aside
+        className={cn(
+          "flex w-full flex-col border-r bg-card/50 md:w-80 md:flex-shrink-0",
+          showSidebar ? "flex" : "hidden md:flex",
+        )}
+      >
+        <div className="space-y-3 border-b p-4">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              type="search"
+              placeholder={t("chat.search")}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-9"
+            />
           </div>
-        </ResizablePanel>
-        <ResizableHandle withHandle className="border border-black" />
-        <ResizablePanel>
-          {remoteJid && (
-            <Messages textareaRef={textareaRef} handleTextareaChange={handleTextareaChange} textareaHeight={textareaHeight} lastMessageRef={lastMessageRef} scrollToBottom={scrollToBottom} />
+
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              size="sm"
+              variant={kind === "contacts" ? "secondary" : "ghost"}
+              className="h-8"
+              onClick={() => setKind("contacts")}
+            >
+              <User className="mr-1 h-4 w-4" />
+              {t("chat.tabs.contacts")}
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant={kind === "groups" ? "secondary" : "ghost"}
+              className="h-8"
+              onClick={() => setKind("groups")}
+            >
+              <Users className="mr-1 h-4 w-4" />
+              {t("chat.tabs.groups")}
+            </Button>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <span className="text-xs text-muted-foreground">
+              {t("chat.count", { count: visibleChats.length })}
+            </span>
+          </div>
+        </div>
+
+        <div className="flex-1 overflow-y-auto">
+          {visibleChats.length === 0 ? (
+            <div className="flex h-full flex-col items-center justify-center p-6 text-center">
+              <MessageCircle className="mb-3 h-10 w-10 text-muted-foreground/50" />
+              <p className="text-sm font-medium text-muted-foreground">
+                {search ? t("chat.empty.search") : t("chat.empty.default")}
+              </p>
+              {search && <p className="mt-1 text-xs text-muted-foreground">{t("chat.empty.tryAnother")}</p>}
+            </div>
+          ) : (
+            visibleChats.map((chat) => {
+              const selected = remoteJid === chat.remoteJid;
+              const name = chat.pushName || formatJid(chat.remoteJid);
+
+              return (
+                <button
+                  key={chat.remoteJid}
+                  type="button"
+                  onClick={() => handleChat(chat.remoteJid)}
+                  className={cn(
+                    "block w-full cursor-pointer p-4 text-left transition-colors",
+                    selected
+                      ? "border-l-2 border-l-primary bg-primary/10"
+                      : "border-b border-border/50 hover:bg-accent",
+                  )}
+                >
+                  <div className="flex items-start gap-3">
+                    <Avatar className="h-10 w-10 flex-shrink-0">
+                      <AvatarImage src={chat.profilePicUrl} alt={name} />
+                      <AvatarFallback className="bg-muted text-muted-foreground">
+                        {kind === "groups" ? <Users className="h-5 w-5" /> : <User className="h-5 w-5" />}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="min-w-0 flex-1">
+                      <div className="mb-0.5 flex items-center justify-between gap-2">
+                        <p className="truncate font-medium">{name}</p>
+                      </div>
+                      <p className="truncate text-sm text-muted-foreground">
+                        {formatJid(chat.remoteJid)}
+                      </p>
+                    </div>
+                  </div>
+                </button>
+              );
+            })
           )}
-        </ResizablePanel>
-      </ResizablePanelGroup>
+        </div>
+      </aside>
+
+      <main
+        className={cn(
+          "flex h-full min-h-0 flex-1 flex-col overflow-hidden",
+          showChat ? "flex" : "hidden md:flex",
+        )}
+      >
+        {remoteJid ? (
+          <>
+            {!isMD && (
+              <div className="flex items-center border-b bg-background/95 p-2 backdrop-blur-sm">
+                <Button variant="ghost" size="sm" onClick={handleBack}>
+                  <ArrowLeft className="mr-1 h-4 w-4" />
+                  {t("chat.back")}
+                </Button>
+              </div>
+            )}
+            <Messages
+              textareaRef={textareaRef}
+              handleTextareaChange={handleTextareaChange}
+              textareaHeight={textareaHeight}
+              lastMessageRef={lastMessageRef}
+              scrollToBottom={scrollToBottom}
+            />
+          </>
+        ) : (
+          <div className="flex h-full flex-1 items-center justify-center p-8">
+            <div className="text-center">
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted">
+                <MessageCircle className="h-8 w-8 text-muted-foreground" />
+              </div>
+              <h3 className="mb-1 text-lg font-semibold">{t("chat.empty.selectTitle")}</h3>
+              <p className="text-sm text-muted-foreground">
+                {t("chat.empty.selectDescription")}
+              </p>
+            </div>
+          </div>
+        )}
+      </main>
     </div>
   );
 }

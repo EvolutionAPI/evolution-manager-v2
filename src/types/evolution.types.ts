@@ -68,6 +68,7 @@ export type Key = {
   id: string;
   fromMe: boolean;
   remoteJid: string;
+  participant?: string;
 };
 
 export type Message = {

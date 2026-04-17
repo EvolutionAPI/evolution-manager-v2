@@ -10,10 +10,11 @@ import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { z } from "zod";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@evoapi/design-system/button";
 import { Form, FormInput, FormSwitch, FormTags } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
+import { IntegrationGuard } from "@/components/integration-disabled";
 import { useInstance } from "@/contexts/InstanceContext";
 
 import { useFetchChatwoot } from "@/lib/queries/chatwoot/fetchChatwoot";
@@ -52,7 +53,7 @@ function Chatwoot() {
   const { instance } = useInstance();
   const [, setLoading] = useState(false);
   const { createChatwoot } = useManageChatwoot();
-  const { data: chatwoot } = useFetchChatwoot({
+  const { data: chatwoot, error } = useFetchChatwoot({
     instanceName: instance?.name,
     token: instance?.token,
   });
@@ -157,7 +158,7 @@ function Chatwoot() {
   };
 
   return (
-    <>
+    <IntegrationGuard error={error} name="Chatwoot" envVar="CHATWOOT_ENABLED">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
           <div>
@@ -209,7 +210,7 @@ function Chatwoot() {
           </div>
         </form>
       </Form>
-    </>
+    </IntegrationGuard>
   );
 }
 

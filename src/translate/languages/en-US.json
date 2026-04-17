@@ -4,20 +4,30 @@
     "search": "Search",
     "status": "Status",
     "settings": "Settings",
-    "instancesNotFound": "No instances found"
+    "instancesNotFound": "No instances found",
+    "subtitle": "Manage your WhatsApp instances",
+    "card": {
+      "phone": "Number"
+    },
+    "empty": {
+      "title": "No instances found",
+      "description": "Create your first instance to get started"
+    }
   },
   "button": {
     "delete": "Delete",
     "deleting": "Deleting...",
     "cancel": "Cancel",
     "markAll": "Mark All",
-    "unMarkAll": "Unmark All"
+    "unMarkAll": "Unmark All",
+    "refresh": "Refresh"
   },
   "modal": {
     "delete": {
       "title": "Delete Record",
       "message": "You are about to delete the instance {{instanceName}}, Are you sure you want to continue?",
-      "messageSingle": "This action cannot be undone"
+      "messageSingle": "This action cannot be undone",
+      "confirm": "Type the instance name to confirm:"
     }
   },
   "status": {
@@ -43,6 +53,11 @@
       "portuguese": "Portuguese",
       "spanish": "Spanish",
       "french": "French"
+    },
+    "logout": {
+      "action": "Sign out",
+      "title": "Are you sure you want to sign out?",
+      "description": "You will be disconnected and redirected to the login screen."
     }
   },
   "chat": {
@@ -62,6 +77,29 @@
         "file": "File",
         "selectedFile": "Selected file"
       }
+    },
+    "search": "Search conversations...",
+    "back": "Back",
+    "tabs": {
+      "contacts": "Contacts",
+      "groups": "Groups"
+    },
+    "count_one": "{{count}} conversation",
+    "count_other": "{{count}} conversations",
+    "empty": {
+      "default": "No conversations yet",
+      "search": "No conversations found",
+      "tryAnother": "Try another term",
+      "selectTitle": "Select a conversation",
+      "selectDescription": "Choose a contact or group from the list to start"
+    },
+    "input": {
+      "placeholder": "Type a message...",
+      "send": "Send"
+    },
+    "date": {
+      "today": "Today",
+      "yesterday": "Yesterday"
     }
   },
   "sidebar": {
@@ -87,7 +125,7 @@
     "documentation": "Documentation",
     "postman": "Postman",
     "discord": "Discord",
-    "supportPremium": "Support Premium"
+    "supportPremium": "Premium Support"
   },
   "toast": {
     "instance": {
@@ -108,8 +146,10 @@
       "invalidCredentials": "Invalid credentials"
     },
     "button": {
-      "login": "Login"
-    }
+      "login": "Login",
+      "connecting": "Connecting..."
+    },
+    "subtitle": "Enter your credentials to access the system"
   },
   "instance": {
     "modal": {
@@ -149,12 +189,14 @@
           "title": "Get the pairing code to connect with WhatsApp"
         },
         "restart": "Restart",
-        "disconnect": "Disconnect"
+        "disconnect": "Disconnect",
+        "sendMessage": "Send message"
       },
       "alert": "To connect, scan the QR code with your WhatsApp Web",
       "contacts": "Contacts",
       "chats": "Chats",
-      "messages": "Messages"
+      "messages": "Messages",
+      "subtitle": "Manage your instance"
     }
   },
   "settings": {
@@ -1435,5 +1477,118 @@
         "title": "Default Settings"
       }
     }
+  },
+  "common": {
+    "search": "Search..."
+  },
+  "sendMessage": {
+    "title": "Send Message",
+    "description": "Send a text message from the instance",
+    "validation": {
+      "numberRequired": "Number is required",
+      "messageRequired": "Message is required"
+    },
+    "form": {
+      "number": {
+        "label": "Number (with country code)"
+      },
+      "message": {
+        "label": "Message",
+        "placeholder": "Type your message..."
+      }
+    },
+    "button": {
+      "send": "Send",
+      "sending": "Sending..."
+    },
+    "toast": {
+      "success": "Message sent successfully",
+      "error": "Error sending message",
+      "noToken": "Instance token not available"
+    }
+  },
+  "qrCode": {
+    "title": "Connect via QR Code",
+    "description": "Scan the QR Code to connect the instance",
+    "generating": "Generating QR Code...",
+    "waiting": "Waiting for QR Code...",
+    "connected": {
+      "title": "Instance connected",
+      "description": "The {{instanceName}} instance is already connected",
+      "connectedAs": "Connected as"
+    },
+    "pairingCode": {
+      "title": "Connect with pairing code",
+      "label": "Pairing code",
+      "generate": "Generate code",
+      "generating": "Generating...",
+      "hint": "Enter the number with country code (e.g. 5511999999999) to receive a pairing code"
+    },
+    "howTo": {
+      "title": "How to connect:",
+      "step1": "Open WhatsApp on your phone",
+      "step2": "Tap Menu or Settings",
+      "step3": "Select Linked devices",
+      "step4": "Tap Link a device",
+      "step5": "Point your camera at the QR Code"
+    },
+    "button": {
+      "refresh": "Refresh QR Code",
+      "refreshing": "Refreshing...",
+      "close": "Close"
+    },
+    "toast": {
+      "pairingSuccess": "Pairing code generated",
+      "pairingError": "Error generating pairing code",
+      "refreshSuccess": "QR Code refreshed",
+      "refreshError": "Error refreshing QR Code"
+    }
+  },
+  "newInstance": {
+    "title": "New Instance",
+    "description": "Create a new instance to connect to WhatsApp",
+    "validation": {
+      "nameMin": "Name must be at least 3 characters",
+      "nameMax": "Name must be at most 50 characters",
+      "nameFormat": "Name can only contain letters, numbers, hyphens and underscores"
+    },
+    "form": {
+      "name": {
+        "label": "Instance Name",
+        "placeholder": "my-instance",
+        "hint": "Use letters, numbers, hyphen (-) or underscore (_)"
+      },
+      "token": {
+        "label": "Token (optional)",
+        "placeholder": "Leave blank to generate automatically",
+        "hint": "If not provided, a UUID will be generated automatically"
+      }
+    },
+    "proxy": {
+      "title": "Configure Proxy (optional)",
+      "host": {
+        "label": "Host",
+        "placeholder": "proxy.example.com"
+      },
+      "port": {
+        "label": "Port"
+      },
+      "username": {
+        "label": "Username",
+        "placeholder": "user"
+      },
+      "password": {
+        "label": "Password",
+        "placeholder": "••••••••"
+      }
+    },
+    "button": {
+      "create": "Create Instance",
+      "creating": "Creating..."
+    }
+  },
+  "table": {
+    "loading": "Loading...",
+    "noResults": "No results found!"
   }
 }

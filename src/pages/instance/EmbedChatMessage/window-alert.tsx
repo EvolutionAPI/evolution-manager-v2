@@ -2,7 +2,7 @@ import { AlertCircle, Clock } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Alert, AlertDescription } from "@evoapi/design-system/alert";
 
 interface WindowAlertProps {
   windowExpires: string;

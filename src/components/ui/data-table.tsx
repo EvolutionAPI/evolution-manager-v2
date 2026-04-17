@@ -2,8 +2,9 @@
 
 import { ColumnDef, TableOptions, flexRender, getCoreRowModel, getFilteredRowModel, getGroupedRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 import { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@evoapi/design-system/table";
 
 import { cn } from "@/lib/utils";
 
@@ -19,6 +20,7 @@ interface DataTableProps<TData, TValue> extends Omit<TableOptions<TData>, "data"
 }
 
 export function DataTable<TData, TValue>({ columns, data, isLoading, loadingMessage, noResultsMessage, enableHeaders = true, className, highlightedRows, ...options }: DataTableProps<TData, TValue>) {
+  const { t } = useTranslation();
   const table = useReactTable({
     ...options,
     data,
@@ -47,7 +49,7 @@ export function DataTable<TData, TValue>({ columns, data, isLoading, loadingMess
           {isLoading ? (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center text-muted-foreground">
-                {loadingMessage ?? "Carregando..."}
+                {loadingMessage ?? t("table.loading")}
               </TableCell>
             </TableRow>
           ) : (
@@ -63,7 +65,7 @@ export function DataTable<TData, TValue>({ columns, data, isLoading, loadingMess
               ) : (
                 <TableRow>
                   <TableCell colSpan={columns.length} className="h-24 text-center">
-                    {noResultsMessage ?? "Nenhum resultado encontrado!"}
+                    {noResultsMessage ?? t("table.noResults")}
                   </TableCell>
                 </TableRow>
               )}

@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useVerifyServer } from "@/lib/queries/auth/verifyServer";
 import { getProvider, getToken, TOKEN_ID } from "@/lib/queries/token";
 
-import { Button } from "./ui/button";
+import { Button } from "@evoapi/design-system/button";
 
 function Footer() {
   const { t } = useTranslation();

@@ -1,12 +1,11 @@
-import { DropdownMenu, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
-import { ArrowRightIcon, ChevronDownIcon, SparkleIcon, User, ZapIcon } from "lucide-react";
+import { Send, User } from "lucide-react";
 import { RefObject, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 
-import { Button } from "@/components/ui/button";
-import { DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@evoapi/design-system/avatar";
+import { Button } from "@evoapi/design-system/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
@@ -32,31 +31,29 @@ type MessagesProps = {
 };
 
 // Utility function to format dates like WhatsApp
-const formatDateSeparator = (date: Date): string => {
+type TFn = (key: string, opts?: Record<string, unknown>) => string;
+
+const formatDateSeparator = (date: Date, t: TFn, locale: string): string => {
   const today = new Date();
   const yesterday = new Date(today);
   yesterday.setDate(yesterday.getDate() - 1);
 
   const messageDate = new Date(date);
 
-  // Check if it's today
   if (messageDate.toDateString() === today.toDateString()) {
-    return "Hoje";
+    return t("chat.date.today", { defaultValue: "Hoje" });
   }
 
-  // Check if it's yesterday
   if (messageDate.toDateString() === yesterday.toDateString()) {
-    return "Ontem";
+    return t("chat.date.yesterday", { defaultValue: "Ontem" });
   }
 
-  // Check if it's within the last week
   const daysDiff = Math.floor((today.getTime() - messageDate.getTime()) / (1000 * 60 * 60 * 24));
   if (daysDiff < 7) {
-    return messageDate.toLocaleDateString("pt-BR", { weekday: "long" });
+    return messageDate.toLocaleDateString(locale, { weekday: "long" });
   }
 
-  // For older dates, show the full date
-  return messageDate.toLocaleDateString("pt-BR", {
+  return messageDate.toLocaleDateString(locale, {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
@@ -108,12 +105,27 @@ const getMessageTimestamp = (message: Message): Date => {
 
 // Component for date separator
 const DateSeparator = ({ date }: { date: string }) => (
-  <div className="flex items-center justify-center py-4">
-    <div className="rounded-full bg-muted px-3 py-1">
-      <span className="text-sm font-medium text-muted-foreground">{date}</span>
+  <div className="flex items-center justify-center py-3">
+    <div className="rounded-full bg-muted/50 px-3 py-1">
+      <span className="text-xs font-medium text-muted-foreground">{date}</span>
     </div>
   </div>
 );
+
+const formatMessageTime = (date: Date, locale: string): string =>
+  date.toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" });
+
+// WhatsApp-like deterministic color palette per sender
+const SENDER_COLORS = [
+  "#e91e63", "#9c27b0", "#3f51b5", "#2196f3", "#00bcd4",
+  "#009688", "#4caf50", "#ff9800", "#f44336", "#795548",
+];
+
+const getSenderColor = (key: string): string => {
+  let hash = 0;
+  for (let i = 0; i < key.length; i++) hash = (hash * 31 + key.charCodeAt(i)) | 0;
+  return SENDER_COLORS[Math.abs(hash) % SENDER_COLORS.length];
+};
 
 // Helper function to extract text content from message
 const getMessageText = (messageObj: any): string => {
@@ -289,6 +301,8 @@ const MessageContent = ({ message }: { message: Message }) => {
 };
 
 function Messages({ textareaRef, handleTextareaChange, textareaHeight, lastMessageRef, scrollToBottom }: MessagesProps) {
+  const { t, i18n } = useTranslation();
+  const locale = i18n.language;
   const { instance } = useInstance();
   const [messageText, setMessageText] = useState("");
   const [isSending, setIsSending] = useState(false);
@@ -523,7 +537,7 @@ function Messages({ textareaRef, handleTextareaChange, textareaHeight, lastMessa
       if (dateString !== currentDate) {
         if (currentGroup.length > 0) {
           grouped.push({
-            date: formatDateSeparator(new Date(currentDate)),
+            date: formatDateSeparator(new Date(currentDate), t, locale),
             messages: currentGroup,
           });
         }
@@ -536,13 +550,13 @@ function Messages({ textareaRef, handleTextareaChange, textareaHeight, lastMessa
 
     if (currentGroup.length > 0) {
       grouped.push({
-        date: formatDateSeparator(new Date(currentDate)),
+        date: formatDateSeparator(new Date(currentDate), t, locale),
         messages: currentGroup,
       });
     }
 
     return grouped;
-  }, [allMessages]);
+  }, [allMessages, t, locale]);
 
   useEffect(() => {
     if (isSuccess && allMessages) {
@@ -561,112 +575,109 @@ function Messages({ textareaRef, handleTextareaChange, textareaHeight, lastMessa
     }
   }, [remoteJid]);
 
-  const renderBubbleRight = (message: Message) => {
-    return (
-      <div key={message.id} className="bubble-right">
-        <div className="flex items-start gap-4 self-end">
-          <div className="grid gap-1">
-            <div className="bubble">
-              <MessageContent message={message} />
-            </div>
-          </div>
+  const renderBubbleRight = (message: Message) => (
+    <div key={message.id} className="mb-4 flex justify-end">
+      <div className="max-w-[70%]">
+        <div className="rounded-lg bg-primary px-3 py-2 text-sm text-primary-foreground">
+          <MessageContent message={message} />
         </div>
+        <span className="mt-0.5 block px-1 text-right text-[11px] text-muted-foreground">
+          {formatMessageTime(getMessageTimestamp(message), locale)}
+        </span>
       </div>
-    );
-  };
+    </div>
+  );
 
   const renderBubbleLeft = (message: Message) => {
+    const isGroup = !!remoteJid?.endsWith("@g.us");
+    const participant = message.key.participant;
+    const senderKey = participant || message.pushName || "";
+    const senderName = message.pushName || (participant ? participant.split("@")[0] : "");
+
     return (
-      <div key={message.id} className="bubble-left">
-        <div className="flex items-start gap-4">
-          <div className="grid gap-1">
-            <div className="bubble">
-              <MessageContent message={message} />
+      <div key={message.id} className="mb-4 flex justify-start">
+        <div className="max-w-[70%]">
+          {isGroup && senderName && (
+            <div className="mb-1 text-xs font-semibold" style={{ color: getSenderColor(senderKey) }}>
+              {senderName}
             </div>
+          )}
+          <div className="rounded-lg border bg-muted px-3 py-2 text-sm text-foreground">
+            <MessageContent message={message} />
           </div>
+          <span className="mt-0.5 block px-1 text-[11px] text-muted-foreground">
+            {formatMessageTime(getMessageTimestamp(message), locale)}
+          </span>
         </div>
       </div>
     );
   };
 
+  const headerName = chat?.pushName || chat?.remoteJid?.split("@")[0];
+  const headerSub = chat?.remoteJid?.split("@")[0];
+
   return (
-    <div className="flex h-full flex-col">
-      <div className="sticky top-0 bg-background border-b border-border p-3">
+    <div className="flex h-full flex-col bg-muted/10">
+      <div className="flex-shrink-0 border-b bg-background/95 p-4 backdrop-blur-sm">
         <div className="flex items-center gap-3">
           <Avatar className="h-10 w-10">
-            <AvatarImage src={chat?.profilePicUrl} alt={chat?.pushName || chat?.remoteJid?.split("@")[0]} />
-            <AvatarFallback className="bg-slate-700 text-slate-300 border border-slate-600">
+            <AvatarImage src={chat?.profilePicUrl} alt={headerName} />
+            <AvatarFallback className="bg-muted text-muted-foreground">
               <User className="h-5 w-5" />
             </AvatarFallback>
           </Avatar>
-          <div className="flex-1 min-w-0">
-            <div className="font-medium text-sm truncate">{chat?.pushName || chat?.remoteJid?.split("@")[0]}</div>
-            <div className="text-xs text-muted-foreground truncate">{chat?.remoteJid?.split("@")[0]}</div>
+          <div className="min-w-0 flex-1">
+            <h3 className="truncate font-semibold">{headerName}</h3>
+            <p className="truncate text-xs text-muted-foreground">{headerSub}</p>
           </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                <ChevronDownIcon className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="max-w-[300px]">
-              <DropdownMenuItem className="items-start gap-2">
-                <SparkleIcon className="mr-2 h-4 w-4 shrink-0 translate-y-1" />
-                <div>
-                  <div className="font-medium">GPT-4</div>
-                  <div className="text-muted-foreground/80">With DALL-E, browsing and analysis. Limit 40 messages / 3 hours</div>
-                </div>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="items-start gap-2">
-                <ZapIcon className="mr-2 h-4 w-4 shrink-0 translate-y-1" />
-                <div>
-                  <div className="font-medium">GPT-3</div>
-                  <div className="text-muted-foreground/80">Great for everyday tasks</div>
-                </div>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
         </div>
       </div>
-      <div className="message-container mx-auto flex max-w-4xl flex-1 flex-col gap-2 overflow-y-auto px-2">
+      <div className="flex w-full flex-1 flex-col overflow-y-auto px-4 py-4">
         {groupedMessages.map((group, groupIndex) => (
           <div key={groupIndex}>
             <DateSeparator date={group.date} />
-            <div className="flex flex-col gap-2">
-              {group.messages.map((message) => {
-                if (message.key.fromMe) {
-                  return renderBubbleRight(message);
-                } else {
-                  return renderBubbleLeft(message);
-                }
-              })}
-            </div>
+            {group.messages.map((message) =>
+              message.key.fromMe ? renderBubbleRight(message) : renderBubbleLeft(message),
+            )}
           </div>
         ))}
         <div ref={lastMessageRef as never} />
       </div>
-      <div className="sticky bottom-0 mx-auto flex w-full max-w-2xl flex-col gap-1.5 bg-background px-2 py-2">
-        {selectedMedia && <SelectedMedia selectedMedia={selectedMedia} setSelectedMedia={setSelectedMedia} />}
-        <div className="flex items-center rounded-3xl border border-border bg-background px-2 py-1">
-          {instance && <MediaOptions instance={instance} setSelectedMedia={setSelectedMedia} />}
-          <Textarea
-            placeholder="Enviar mensagem..."
-            name="message"
-            id="message"
-            rows={1}
-            ref={textareaRef}
-            value={messageText}
-            onChange={handleInputChange}
-            onKeyDown={handleKeyDown}
-            disabled={isSending}
-            style={{ height: textareaHeight }}
-            className="min-h-0 w-full resize-none border-none p-3 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0 focus-visible:ring-offset-transparent"
-          />
-          <Button type="button" size="icon" onClick={sendMessage} disabled={(!messageText.trim() && !selectedMedia) || isSending} className="rounded-full p-2 disabled:opacity-50">
-            <ArrowRightIcon className="h-6 w-6" />
-            <span className="sr-only">Enviar</span>
-          </Button>
+      <div className="flex-shrink-0 border-t bg-background p-3">
+        <div className="rounded-lg border border-border bg-card shadow-sm">
+          {selectedMedia && (
+            <div className="border-b border-border bg-muted/30 px-3 py-2">
+              <SelectedMedia selectedMedia={selectedMedia} setSelectedMedia={setSelectedMedia} />
+            </div>
+          )}
+          <div className="flex items-center gap-2 px-2 py-1.5">
+            <div className="flex flex-shrink-0 items-center">
+              {instance && <MediaOptions instance={instance} setSelectedMedia={setSelectedMedia} />}
+            </div>
+            <Textarea
+              placeholder={t("chat.input.placeholder", { defaultValue: "Digite uma mensagem..." })}
+              name="message"
+              id="message"
+              rows={1}
+              ref={textareaRef}
+              value={messageText}
+              onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
+              disabled={isSending}
+              style={{ height: textareaHeight }}
+              className="min-h-9 flex-1 resize-none border-none bg-transparent px-2 py-1.5 text-sm shadow-none focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
+            />
+            <Button
+              type="button"
+              size="icon"
+              onClick={sendMessage}
+              disabled={(!messageText.trim() && !selectedMedia) || isSending}
+              className="h-9 w-9 flex-shrink-0 bg-primary text-primary-foreground hover:bg-primary/85 disabled:bg-muted disabled:text-muted-foreground disabled:opacity-50"
+            >
+              <Send className="h-4 w-4" />
+              <span className="sr-only">{t("chat.input.send")}</span>
+            </Button>
+          </div>
         </div>
       </div>
     </div>

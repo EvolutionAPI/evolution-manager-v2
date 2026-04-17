@@ -1,3 +1,4 @@
+import "@evoapi/design-system/styles";
 import "./index.css";
 import "react-toastify/dist/ReactToastify.css";
 

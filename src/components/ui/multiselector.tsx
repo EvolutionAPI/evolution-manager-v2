@@ -1,11 +1,10 @@
 "use client";
 
+import { Badge } from "@evoapi/design-system/badge";
+import { Command, CommandItem, CommandEmpty, CommandList } from "@evoapi/design-system/command";
 import { Command as CommandPrimitive } from "cmdk";
 import { X as RemoveIcon, Check } from "lucide-react";
 import React, { KeyboardEvent, createContext, forwardRef, useCallback, useContext, useState } from "react";
-
-import { Badge } from "@/components/ui/badge";
-import { Command, CommandItem, CommandEmpty, CommandList } from "@/components/ui/command";
 
 import { cn } from "@/lib/utils";
 

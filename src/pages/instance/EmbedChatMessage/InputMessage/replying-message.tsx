@@ -2,7 +2,7 @@
 import { XIcon, ImageIcon, VideoIcon, MicIcon, FileIcon, StickerIcon, UserIcon, MapPinIcon } from "lucide-react";
 import { useContext } from "react";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@evoapi/design-system/button";
 
 import { useEmbedColors } from "@/contexts/EmbedColorsContext";
 import { ReplyMessageContext } from "@/contexts/ReplyingMessage/ReplyingMessageContext";
