@@ -69,6 +69,11 @@ web_modules/
 # Yarn Integrity file
 .yarn-integrity
 
+# Alternate package manager lockfiles (project uses npm)
+pnpm-lock.yaml
+yarn.lock
+bun.lockb
+
 # dotenv environment variable files
 .env
 .env.development.local
