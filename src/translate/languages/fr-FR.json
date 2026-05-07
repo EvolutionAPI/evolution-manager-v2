@@ -154,6 +154,11 @@
       "description": "Vous serez déconnecté et redirigé vers l'écran de connexion."
     }
   },
+  "chat": {
+    "message": {
+      "invalidOrUnsupported": "Message invalide ou non pris en charge"
+    }
+  },
   "sidebar": {
     "dashboard": "Vue d'ensemble",
     "configurations": "Configurations",

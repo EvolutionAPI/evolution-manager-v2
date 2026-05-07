@@ -155,6 +155,11 @@
       "description": "Será desconectado y redirigido a la pantalla de inicio de sesión."
     }
   },
+  "chat": {
+    "message": {
+      "invalidOrUnsupported": "Mensaje inválido o no soportado"
+    }
+  },
   "sidebar": {
     "dashboard": "Visión General",
     "configurations": "Configuraciones",

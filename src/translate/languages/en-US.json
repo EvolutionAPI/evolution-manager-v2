@@ -156,6 +156,9 @@
     }
   },
   "chat": {
+    "message": {
+      "invalidOrUnsupported": "Invalid or unsupported message"
+    },
     "media": {
       "attach": "Attach file",
       "document": "Document",

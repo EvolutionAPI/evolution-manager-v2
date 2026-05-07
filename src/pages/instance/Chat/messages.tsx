@@ -151,6 +151,17 @@ const getMessageText = (messageObj: any): string => {
 
 // Component to render different message types based on messageType
 const MessageContent = ({ message }: { message: Message }) => {
+  const { t } = useTranslation();
+
+  // Early return for invalid messages
+  if (!message?.message) {
+    return (
+      <div className="text-xs text-muted-foreground bg-muted p-2 rounded max-w-xs">
+        {t("chat.message.invalidOrUnsupported")}
+      </div>
+    );
+  }
+
   const messageType = message.messageType as string;
 
   switch (messageType) {
