@@ -1,5 +1,12 @@
 #!/bin/bash
-VERSION=$1
+set -e
 
-docker build -t atendai/evolution-manager-v2:${VERSION} .
-docker push atendai/evolution-manager-v2:${VERSION}
+VERSION=${1:?Usage: $0 <version>}
+IMAGE="evolutionfoundation/evolution-manager-v2"
+
+docker buildx build \
+  --platform linux/amd64,linux/arm64 \
+  --tag "${IMAGE}:${VERSION}" \
+  --tag "${IMAGE}:latest" \
+  --push \
+  .

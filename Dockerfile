@@ -15,8 +15,6 @@ COPY tsconfig.json ./
 COPY tsconfig.app.json ./
 COPY tsconfig.node.json ./
 COPY vite.config.ts ./
-COPY postcss.config.js ./
-COPY tailwind.config.js ./
 COPY index.html ./
 COPY components.json ./
 COPY public/ ./public/

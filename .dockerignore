@@ -1,0 +1,16 @@
+node_modules/
+dist/
+build/
+.git/
+.gitignore
+.github/
+*.log
+.env
+.env.*
+.DS_Store
+Thumbs.db
+*.tsbuildinfo
+tmp/
+temp/
+coverage/
+.nyc_output/
