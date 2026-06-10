@@ -8,6 +8,7 @@ import { CircleUser, LogOut, MessageCircle, Power, QrCode, RefreshCw, Send, User
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import QRCode from "react-qr-code";
+import { toast } from "react-toastify";
 
 import { BaseHeader } from "@/components/base-header";
 import { InstanceStatus } from "@/components/instance-status";
@@ -53,8 +54,10 @@ function DashboardInstance() {
     try {
       await restart(instanceName);
       await reloadInstance();
+      toast.success(t("instance.dashboard.toast.restart.success"));
     } catch (error) {
       console.error("Error:", error);
+      toast.error(t("instance.dashboard.toast.restart.error"));
     }
   };
 

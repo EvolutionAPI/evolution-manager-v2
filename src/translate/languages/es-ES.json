@@ -305,6 +305,12 @@
         "disconnect": "Desconectar",
         "sendMessage": "Enviar mensaje"
       },
+      "toast": {
+        "restart": {
+          "success": "Instancia reiniciada con éxito",
+          "error": "Error al reiniciar instancia"
+        }
+      },
       "alert": "Para conectar, escanea el Código QR con WhatsApp",
       "contacts": "Contactos",
       "chats": "Chats",
@@ -523,6 +529,10 @@
       "importContacts": {
         "label": "Importar Contactos",
         "description": "Importar contactos del libro de direcciones de WhatsApp al conectar el Código QR"
+      },
+      "mergeBrazilContacts": {
+        "label": "Fusionar Contactos Brasil",
+        "description": "Fusiona contactos brasileños con y sin código de país (55)"
       },
       "importMessages": {
         "label": "Importar Mensajes",

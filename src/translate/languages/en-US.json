@@ -348,6 +348,12 @@
         "disconnect": "Disconnect",
         "sendMessage": "Send message"
       },
+      "toast": {
+        "restart": {
+          "success": "Instance restarted successfully",
+          "error": "Error restarting instance"
+        }
+      },
       "alert": "To connect, scan the QR code with your WhatsApp Web",
       "contacts": "Contacts",
       "chats": "Chats",
@@ -566,6 +572,10 @@
       "importContacts": {
         "label": "Import Contacts",
         "description": "Import contacts from WhatsApp address book by connecting QR Code"
+      },
+      "mergeBrazilContacts": {
+        "label": "Merge Brazil Contacts",
+        "description": "Merge Brazilian contacts with and without country code (55)"
       },
       "importMessages": {
         "label": "Import Messages",

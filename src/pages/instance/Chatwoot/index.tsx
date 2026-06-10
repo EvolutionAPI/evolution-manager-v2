@@ -25,7 +25,10 @@ import { Chatwoot as ChatwootType } from "@/types/evolution.types";
 const stringOrUndefined = z
   .string()
   .optional()
-  .transform((value) => (value === "" ? undefined : value));
+  .transform((value) => {
+    const trimmed = value?.trim();
+    return !trimmed || trimmed === "" ? undefined : trimmed;
+  });
 
 const formSchema = z.object({
   enabled: z.boolean(),
@@ -118,7 +121,7 @@ function Chatwoot() {
       token: data.token,
       url: data.url,
       signMsg: data.signMsg || false,
-      signDelimiter: data.signDelimiter || "\\n",
+      signDelimiter: data.signDelimiter?.trim() || "\\n",
       nameInbox: data.nameInbox || "",
       organization: data.organization || "",
       logo: data.logo || "",
@@ -197,6 +200,7 @@ function Chatwoot() {
               />
               <FormSwitch name="reopenConversation" label={t("chatwoot.form.reopenConversation.label")} className="w-full justify-between" helper={t("chatwoot.form.reopenConversation.description")} />
               <FormSwitch name="importContacts" label={t("chatwoot.form.importContacts.label")} className="w-full justify-between" helper={t("chatwoot.form.importContacts.description")} />
+              <FormSwitch name="mergeBrazilContacts" label={t("chatwoot.form.mergeBrazilContacts.label")} className="w-full justify-between" helper={t("chatwoot.form.mergeBrazilContacts.description")} />
               <FormSwitch name="importMessages" label={t("chatwoot.form.importMessages.label")} className="w-full justify-between" helper={t("chatwoot.form.importMessages.description")} />
               <FormInput name="daysLimitImportMessages" label={t("chatwoot.form.daysLimitImportMessages.label")}>
                 <Input type="number" />
