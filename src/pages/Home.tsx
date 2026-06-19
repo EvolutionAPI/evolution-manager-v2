@@ -21,7 +21,7 @@ export default function Home() {
       <header className="flex items-center justify-between px-4 py-2">
         <div className="flex items-center">
           <img
-            src={theme === "dark" ? "https://evolution-api.com/files/evo/evolution-logo-white.svg" : "https://evolution-api.com/files/evo/evolution-logo.svg"}
+            src={theme === "dark" ? "/assets/images/evolution-logo.png" : "/assets/images/evolution-logo.png"}
             alt="Evolution API Logo"
             className="h-8"
           />
@@ -38,7 +38,7 @@ export default function Home() {
           <div className="text-center mb-12">
             <div className="flex items-center justify-center mb-6">
               <img
-                src={theme === "dark" ? "https://evolution-api.com/files/evo/evolution-logo-white.svg" : "https://evolution-api.com/files/evo/evolution-logo.svg"}
+                src={theme === "dark" ? "/assets/images/evolution-logo.png" : "/assets/images/evolution-logo.png"}
                 alt="Evolution Manager Logo"
                 className="h-10"
               />

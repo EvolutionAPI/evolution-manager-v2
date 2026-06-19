@@ -34,8 +34,8 @@ function Login() {
   const [submitting, setSubmitting] = useState(false);
   const logoSrc =
     theme === "dark"
-      ? "https://evolution-api.com/files/evo/evolution-logo-white.svg"
-      : "https://evolution-api.com/files/evo/evolution-logo.svg";
+      ? "/assets/images/evolution-logo.png"
+      : "/assets/images/evolution-logo.png";
 
   const loginForm = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),

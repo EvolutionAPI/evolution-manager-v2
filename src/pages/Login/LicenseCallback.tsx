@@ -28,8 +28,8 @@ function LicenseCallback() {
 
   const logoSrc =
     theme === "dark"
-      ? "https://evolution-api.com/files/evo/evolution-logo-white.svg"
-      : "https://evolution-api.com/files/evo/evolution-logo.svg";
+      ? "/assets/images/evolution-logo.png"
+      : "/assets/images/evolution-logo.png";
 
   const doActivate = useCallback(async () => {
     setState("activating");
