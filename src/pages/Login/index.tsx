@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { LOGO_SRC } from "@/lib/constants";
 import { Alert, AlertDescription, AlertTitle } from "@evoapi/design-system/alert";
 import { Button } from "@evoapi/design-system/button";
 import { Input } from "@/components/ui/input";
@@ -11,7 +12,6 @@ import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 
 import { Form, FormSelect } from "@/components/ui/form";
-import { useTheme } from "@/components/theme-provider";
 
 import { verifyCreds } from "@/lib/queries/auth/verifyCreds";
 import { verifyGoServer } from "@/lib/queries/auth/verifyGoServer";
@@ -29,13 +29,9 @@ type LoginSchema = z.infer<typeof loginSchema>;
 function Login() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { theme } = useTheme();
   const [loginError, setLoginError] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const logoSrc =
-    theme === "dark"
-      ? "/assets/images/evolution-logo.png"
-      : "/assets/images/evolution-logo.png";
+  const logoSrc = LOGO_SRC;
 
   const loginForm = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),

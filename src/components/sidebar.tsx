@@ -1,4 +1,5 @@
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@evoapi/design-system/collapsible";
+import { LOGO_SRC } from "@/lib/constants";
 import {
   ChevronDown,
   CircleHelp,
@@ -13,7 +14,6 @@ import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { NavLink, useLocation } from "react-router-dom";
 
-import { useTheme } from "@/components/theme-provider";
 import { useInstance } from "@/contexts/InstanceContext";
 
 import { FEATURES, FeatureKey, isFeatureEnabled } from "@/lib/provider/features";
@@ -41,11 +41,7 @@ type Menu = MenuLeaf | MenuGroup;
 
 function SidebarShell({ children, footer }: { children: React.ReactNode; footer?: React.ReactNode }) {
   const currentYear = new Date().getFullYear();
-  const { theme } = useTheme();
-  const logoSrc =
-    theme === "dark"
-      ? "/assets/images/evolution-logo.png"
-      : "/assets/images/evolution-logo.png";
+  const logoSrc = LOGO_SRC;
 
   return (
     <aside className="hidden md:flex bg-sidebar text-sidebar-foreground flex-col w-56 border-r border-sidebar-border">

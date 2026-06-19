@@ -1,15 +1,14 @@
 import { Button } from "@evoapi/design-system/button";
+import { LOGO_SRC } from "@/lib/constants";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@evoapi/design-system/card";
 import { Badge } from "@evoapi/design-system/badge";
 import { ArrowRight, Github, Globe, Mail, Shield } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useTheme } from "@/components/theme-provider";
 import { ModeToggle } from "@/components/mode-toggle";
 import { LanguageToggle } from "@/components/language-toggle";
 
 export default function Home() {
   const navigate = useNavigate();
-  const { theme } = useTheme();
 
   const handleGoToManager = () => {
     navigate("/manager");
@@ -21,7 +20,7 @@ export default function Home() {
       <header className="flex items-center justify-between px-4 py-2">
         <div className="flex items-center">
           <img
-            src={theme === "dark" ? "/assets/images/evolution-logo.png" : "/assets/images/evolution-logo.png"}
+            src={LOGO_SRC}
             alt="Evolution API Logo"
             className="h-8"
           />
@@ -38,7 +37,7 @@ export default function Home() {
           <div className="text-center mb-12">
             <div className="flex items-center justify-center mb-6">
               <img
-                src={theme === "dark" ? "/assets/images/evolution-logo.png" : "/assets/images/evolution-logo.png"}
+                src={LOGO_SRC}
                 alt="Evolution Manager Logo"
                 className="h-10"
               />

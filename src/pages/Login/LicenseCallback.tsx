@@ -4,12 +4,11 @@
 // redirects back to /manager (or back to /manager/login on failure).
 
 import { Button } from "@evoapi/design-system/button";
+import { LOGO_SRC } from "@/lib/constants";
 import { CheckCircle, Loader2, XCircle } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
-
-import { useTheme } from "@/components/theme-provider";
 
 import { activateLicense } from "@/lib/queries/license/license";
 import { getToken, TOKEN_ID } from "@/lib/queries/token";
@@ -18,7 +17,6 @@ type State = "activating" | "success" | "error";
 
 function LicenseCallback() {
   const { t } = useTranslation();
-  const { theme } = useTheme();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const code = searchParams.get("code") ?? "";
@@ -26,10 +24,7 @@ function LicenseCallback() {
   const [state, setState] = useState<State>("activating");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const logoSrc =
-    theme === "dark"
-      ? "/assets/images/evolution-logo.png"
-      : "/assets/images/evolution-logo.png";
+  const logoSrc = LOGO_SRC;
 
   const doActivate = useCallback(async () => {
     setState("activating");
