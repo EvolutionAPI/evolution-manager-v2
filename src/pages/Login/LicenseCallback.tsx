@@ -10,26 +10,22 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { useTheme } from "@/components/theme-provider";
-
 import { activateLicense } from "@/lib/queries/license/license";
+import { EVOLUTION_LOGO_DARK_URL, EVOLUTION_LOGO_LIGHT_URL } from "@/lib/brand";
 import { getToken, TOKEN_ID } from "@/lib/queries/token";
 
 type State = "activating" | "success" | "error";
 
 function LicenseCallback() {
   const { t } = useTranslation();
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const code = searchParams.get("code") ?? "";
 
   const [state, setState] = useState<State>("activating");
   const [errorMessage, setErrorMessage] = useState("");
-
-  const logoSrc =
-    theme === "dark"
-      ? "https://evolution-api.com/files/evo/evolution-logo-white.svg"
-      : "https://evolution-api.com/files/evo/evolution-logo.svg";
+  const logoSrc = resolvedTheme === "dark" ? EVOLUTION_LOGO_DARK_URL : EVOLUTION_LOGO_LIGHT_URL;
 
   const doActivate = useCallback(async () => {
     setState("activating");
