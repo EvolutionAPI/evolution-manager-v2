@@ -6,10 +6,12 @@ import { useNavigate } from "react-router-dom";
 import { useTheme } from "@/components/theme-provider";
 import { ModeToggle } from "@/components/mode-toggle";
 import { LanguageToggle } from "@/components/language-toggle";
+import { EVOLUTION_LOGO_DARK_URL, EVOLUTION_LOGO_LIGHT_URL } from "@/lib/brand";
 
 export default function Home() {
   const navigate = useNavigate();
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
+  const logoSrc = resolvedTheme === "dark" ? EVOLUTION_LOGO_DARK_URL : EVOLUTION_LOGO_LIGHT_URL;
 
   const handleGoToManager = () => {
     navigate("/manager");
@@ -21,7 +23,7 @@ export default function Home() {
       <header className="flex items-center justify-between px-4 py-2">
         <div className="flex items-center">
           <img
-            src={theme === "dark" ? "https://evolution-api.com/files/evo/evolution-logo-white.svg" : "https://evolution-api.com/files/evo/evolution-logo.svg"}
+            src={logoSrc}
             alt="Evolution API Logo"
             className="h-8"
           />
@@ -38,7 +40,7 @@ export default function Home() {
           <div className="text-center mb-12">
             <div className="flex items-center justify-center mb-6">
               <img
-                src={theme === "dark" ? "https://evolution-api.com/files/evo/evolution-logo-white.svg" : "https://evolution-api.com/files/evo/evolution-logo.svg"}
+                src={logoSrc}
                 alt="Evolution Manager Logo"
                 className="h-10"
               />

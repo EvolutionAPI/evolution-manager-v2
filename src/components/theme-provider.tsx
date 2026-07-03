@@ -2,6 +2,7 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 
 type Theme = "dark" | "light" | "system";
+type ResolvedTheme = "dark" | "light";
 
 type ThemeProviderProps = {
   children: ReactNode;
@@ -11,18 +12,35 @@ type ThemeProviderProps = {
 
 type ThemeProviderState = {
   theme: Theme;
+  resolvedTheme: ResolvedTheme;
   setTheme: (theme: Theme) => void;
 };
 
 const initialState: ThemeProviderState = {
   theme: "system",
+  resolvedTheme: "light",
   setTheme: () => null,
 };
 
 const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
 
+const getSystemTheme = (): ResolvedTheme => {
+  if (typeof window === "undefined") return "light";
+
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+};
+
+const getStoredTheme = (storageKey: string, defaultTheme: Theme): Theme => {
+  if (typeof window === "undefined") return defaultTheme;
+
+  return (localStorage.getItem(storageKey) as Theme) || defaultTheme;
+};
+
+const resolveTheme = (theme: Theme): ResolvedTheme => (theme === "system" ? getSystemTheme() : theme);
+
 export function ThemeProvider({ children, defaultTheme = "system", storageKey = "vite-ui-theme", ...props }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(() => (localStorage.getItem(storageKey) as Theme) || defaultTheme);
+  const [theme, setTheme] = useState<Theme>(() => getStoredTheme(storageKey, defaultTheme));
+  const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>(() => resolveTheme(getStoredTheme(storageKey, defaultTheme)));
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -30,17 +48,28 @@ export function ThemeProvider({ children, defaultTheme = "system", storageKey = 
     root.classList.remove("light", "dark");
 
     if (theme === "system") {
-      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+      const applySystemTheme = () => {
+        const systemTheme = getSystemTheme();
 
-      root.classList.add(systemTheme);
-      return;
+        root.classList.remove("light", "dark");
+        root.classList.add(systemTheme);
+        setResolvedTheme(systemTheme);
+      };
+
+      applySystemTheme();
+      mediaQuery.addEventListener("change", applySystemTheme);
+
+      return () => mediaQuery.removeEventListener("change", applySystemTheme);
     }
 
     root.classList.add(theme);
+    setResolvedTheme(theme);
   }, [theme]);
 
   const value = {
     theme,
+    resolvedTheme,
     setTheme: (theme: Theme) => {
       localStorage.setItem(storageKey, theme);
       setTheme(theme);

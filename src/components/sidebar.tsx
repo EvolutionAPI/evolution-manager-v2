@@ -17,6 +17,7 @@ import { useTheme } from "@/components/theme-provider";
 import { useInstance } from "@/contexts/InstanceContext";
 
 import { FEATURES, FeatureKey, isFeatureEnabled } from "@/lib/provider/features";
+import { EVOLUTION_LOGO_DARK_URL, EVOLUTION_LOGO_LIGHT_URL } from "@/lib/brand";
 import { cn } from "@/lib/utils";
 
 const GATED_IDS = new Set<string>(Object.keys(FEATURES));
@@ -41,11 +42,8 @@ type Menu = MenuLeaf | MenuGroup;
 
 function SidebarShell({ children, footer }: { children: React.ReactNode; footer?: React.ReactNode }) {
   const currentYear = new Date().getFullYear();
-  const { theme } = useTheme();
-  const logoSrc =
-    theme === "dark"
-      ? "https://evolution-api.com/files/evo/evolution-logo-white.svg"
-      : "https://evolution-api.com/files/evo/evolution-logo.svg";
+  const { resolvedTheme } = useTheme();
+  const logoSrc = resolvedTheme === "dark" ? EVOLUTION_LOGO_DARK_URL : EVOLUTION_LOGO_LIGHT_URL;
 
   return (
     <aside className="hidden md:flex bg-sidebar text-sidebar-foreground flex-col w-56 border-r border-sidebar-border">

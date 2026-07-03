@@ -10,12 +10,12 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 
-import { Form, FormSelect } from "@/components/ui/form";
 import { useTheme } from "@/components/theme-provider";
-
+import { Form, FormSelect } from "@/components/ui/form";
 import { verifyCreds } from "@/lib/queries/auth/verifyCreds";
 import { verifyGoServer } from "@/lib/queries/auth/verifyGoServer";
 import { verifyServer } from "@/lib/queries/auth/verifyServer";
+import { EVOLUTION_LOGO_DARK_URL, EVOLUTION_LOGO_LIGHT_URL } from "@/lib/brand";
 import { checkLicenseStatus, initRegister } from "@/lib/queries/license/license";
 import { DEFAULT_PROVIDER, logout, saveToken } from "@/lib/queries/token";
 
@@ -29,13 +29,10 @@ type LoginSchema = z.infer<typeof loginSchema>;
 function Login() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
   const [loginError, setLoginError] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const logoSrc =
-    theme === "dark"
-      ? "https://evolution-api.com/files/evo/evolution-logo-white.svg"
-      : "https://evolution-api.com/files/evo/evolution-logo.svg";
+  const logoSrc = resolvedTheme === "dark" ? EVOLUTION_LOGO_DARK_URL : EVOLUTION_LOGO_LIGHT_URL;
 
   const loginForm = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
