@@ -3,7 +3,7 @@ import { Alert, AlertTitle } from "@evoapi/design-system/alert";
 import { Avatar, AvatarImage } from "@evoapi/design-system/avatar";
 import { Button } from "@evoapi/design-system/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@evoapi/design-system/card";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { CircleUser, LogOut, MessageCircle, Power, QrCode, RefreshCw, Send, UsersRound } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -30,6 +30,7 @@ function DashboardInstance() {
   const [pairingCode, setPairingCode] = useState("");
   const [goQrOpen, setGoQrOpen] = useState(false);
   const [goSendOpen, setGoSendOpen] = useState(false);
+  const [logoutConfirmation, setLogoutConfirmation] = useState(false);
   const token = getToken(TOKEN_ID.TOKEN);
   const isGo = getProvider() === "go";
   const { theme } = useTheme();
@@ -126,7 +127,7 @@ function DashboardInstance() {
                 {
                   label: t("instance.dashboard.button.disconnect", { defaultValue: "Desconectar" }),
                   icon: <LogOut className="h-4 w-4" />,
-                  onClick: () => handleLogout(instance.name),
+                  onClick: () => setLogoutConfirmation(true),
                   variant: "destructive" as const,
                 },
               ]
@@ -156,9 +157,7 @@ function DashboardInstance() {
                 )}
                 <div>
                   <CardTitle className="break-all">{instance.profileName || instance.name}</CardTitle>
-                  {instance.ownerJid && (
-                    <p className="mt-1 break-all text-xs text-muted-foreground">{instance.ownerJid.split("@")[0]}</p>
-                  )}
+                  {instance.ownerJid && <p className="mt-1 break-all text-xs text-muted-foreground">{instance.ownerJid.split("@")[0]}</p>}
                 </div>
               </div>
               <InstanceStatus status={instance.connectionStatus} />
@@ -171,9 +170,7 @@ function DashboardInstance() {
 
             {!connected && (
               <Alert variant="warning" className="flex flex-wrap items-center justify-between gap-3">
-                <AlertTitle className="text-lg font-bold tracking-wide">
-                  {t("instance.dashboard.alert")}
-                </AlertTitle>
+                <AlertTitle className="text-lg font-bold tracking-wide">{t("instance.dashboard.alert")}</AlertTitle>
 
                 {isGo ? (
                   <>
@@ -195,11 +192,7 @@ function DashboardInstance() {
                       <DialogContent onCloseAutoFocus={closeQRCodePopup}>
                         <DialogHeader>{t("instance.dashboard.button.qrcode.title")}</DialogHeader>
                         <div className="flex items-center justify-center py-4">
-                          {qrCode ? (
-                            <QRCode value={qrCode} size={256} bgColor="transparent" fgColor={qrCodeColor} className="rounded-sm" />
-                          ) : (
-                            <LoadingSpinner />
-                          )}
+                          {qrCode ? <QRCode value={qrCode} size={256} bgColor="transparent" fgColor={qrCodeColor} className="rounded-sm" /> : <LoadingSpinner />}
                         </div>
                       </DialogContent>
                     </Dialog>
@@ -269,6 +262,30 @@ function DashboardInstance() {
           </Card>
         </section>
       </div>
+
+      <Dialog onOpenChange={setLogoutConfirmation} open={logoutConfirmation}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t("instance.dashboard.disconnectConfirm.title")}</DialogTitle>
+            <DialogDescription>{t("instance.dashboard.disconnectConfirm.description")}</DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <div className="flex items-center gap-4">
+              <Button onClick={() => setLogoutConfirmation(false)} size="sm" variant="outline">
+                {t("button.cancel")}
+              </Button>
+              <Button
+                onClick={() => {
+                  setLogoutConfirmation(false);
+                  handleLogout(instance.name);
+                }}
+                variant="destructive">
+                {t("instance.dashboard.button.disconnect")}
+              </Button>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

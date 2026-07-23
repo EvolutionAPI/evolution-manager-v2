@@ -309,7 +309,11 @@
       "alert": "Para conectar, escaneie o QR Code com o WhatsApp",
       "contacts": "Contatos",
       "chats": "Chats",
-      "messages": "Mensagens"
+      "messages": "Mensagens",
+      "disconnectConfirm": {
+        "title": "Desconectar instância?",
+        "description": "Isso irá desvincular a sessão do WhatsApp desta instância. Para reconectar, você precisará escanear o QR code novamente. Deseja continuar?"
+      }
     }
   },
   "settings": {

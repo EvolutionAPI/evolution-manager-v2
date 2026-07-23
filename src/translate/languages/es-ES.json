@@ -309,7 +309,11 @@
       "contacts": "Contactos",
       "chats": "Chats",
       "messages": "Mensajes",
-      "subtitle": "Administre su instancia"
+      "subtitle": "Administre su instancia",
+      "disconnectConfirm": {
+        "title": "¿Desconectar instancia?",
+        "description": "Esto desvinculará la sesión de WhatsApp de esta instancia. Para volver a conectarla tendrás que escanear el código QR de nuevo. ¿Deseas continuar?"
+      }
     }
   },
   "settings": {

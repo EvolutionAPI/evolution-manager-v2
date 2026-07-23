@@ -308,7 +308,11 @@
       "contacts": "Contacts",
       "chats": "Chats",
       "messages": "Messages",
-      "subtitle": "Gérez votre instance"
+      "subtitle": "Gérez votre instance",
+      "disconnectConfirm": {
+        "title": "Déconnecter l'instance ?",
+        "description": "Cela dissociera la session WhatsApp de cette instance. Pour la reconnecter, vous devrez scanner à nouveau le code QR. Voulez-vous continuer ?"
+      }
     }
   },
   "settings": {

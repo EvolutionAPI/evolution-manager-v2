@@ -352,7 +352,11 @@
       "contacts": "Contacts",
       "chats": "Chats",
       "messages": "Messages",
-      "subtitle": "Manage your instance"
+      "subtitle": "Manage your instance",
+      "disconnectConfirm": {
+        "title": "Disconnect instance?",
+        "description": "This will unlink the WhatsApp session from this instance. To reconnect you will need to scan the QR code again. Do you want to continue?"
+      }
     }
   },
   "settings": {
