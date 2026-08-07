@@ -5,7 +5,7 @@ import { Button } from "@evoapi/design-system/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@evoapi/design-system/card";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTrigger } from "@/components/ui/dialog";
 import { CircleUser, LogOut, MessageCircle, Power, QrCode, RefreshCw, Send, UsersRound } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import QRCode from "react-qr-code";
 
@@ -28,8 +28,12 @@ function DashboardInstance() {
   const numberFormatter = new Intl.NumberFormat(i18n.language);
   const [qrCode, setQRCode] = useState<string | null>(null);
   const [pairingCode, setPairingCode] = useState("");
+  const [isConnecting, setIsConnecting] = useState(false);
   const [goQrOpen, setGoQrOpen] = useState(false);
   const [goSendOpen, setGoSendOpen] = useState(false);
+  // Ref instead of state: it has to be readable synchronously, before React
+  // has had a chance to re-render, or two fast clicks both pass the check.
+  const connectInFlight = useRef(false);
   const token = getToken(TOKEN_ID.TOKEN);
   const isGo = getProvider() === "go";
   const { theme } = useTheme();
@@ -67,7 +71,19 @@ function DashboardInstance() {
     }
   };
 
+  /**
+   * Ask the server for a QR code or a pairing code.
+   *
+   * Only one request may be in flight at a time. When the instance is closed,
+   * GET /instance/connect opens a brand new WhatsApp connection, so clicking
+   * the button twice left two sockets racing for the same instance: the phone
+   * would scan the code of one while the other overwrote the pairing state.
+   */
   const handleConnect = async (instanceName: string, wantPairing: boolean) => {
+    if (connectInFlight.current) return;
+    connectInFlight.current = true;
+    setIsConnecting(true);
+
     try {
       setQRCode(null);
       if (!token) return console.error("Token not found.");
@@ -81,6 +97,9 @@ function DashboardInstance() {
       }
     } catch (error) {
       console.error("Error:", error);
+    } finally {
+      connectInFlight.current = false;
+      setIsConnecting(false);
     }
   };
 
@@ -187,7 +206,7 @@ function DashboardInstance() {
                   <div className="flex flex-wrap gap-2">
                     <Dialog>
                       <DialogTrigger onClick={() => handleConnect(instance.name, false)} asChild>
-                        <Button>
+                        <Button disabled={isConnecting}>
                           <QrCode className="mr-2 h-4 w-4" />
                           {t("instance.dashboard.button.qrcode.label")}
                         </Button>
@@ -207,7 +226,7 @@ function DashboardInstance() {
                     {instance.number && (
                       <Dialog>
                         <DialogTrigger asChild>
-                          <Button variant="outline" onClick={() => handleConnect(instance.name, true)}>
+                          <Button variant="outline" disabled={isConnecting} onClick={() => handleConnect(instance.name, true)}>
                             {t("instance.dashboard.button.pairingCode.label")}
                           </Button>
                         </DialogTrigger>
