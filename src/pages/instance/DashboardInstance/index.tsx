@@ -23,11 +23,25 @@ import { getProvider, getToken, TOKEN_ID } from "@/lib/queries/token";
 import { GoQrCodeModal } from "./GoQrCodeModal";
 import { GoSendMessageModal } from "./GoSendMessageModal";
 
+/**
+ * How often the QR code shown in the dialog is refreshed.
+ *
+ * The server rotates the QR code every few seconds, but `GET /instance/connect`
+ * was only called once, when the dialog opened. The image on screen therefore
+ * went stale: users scanned a code the server had already replaced, the pairing
+ * failed, and WhatsApp blamed the phone's internet connection.
+ *
+ * Polling is safe: once the instance is in `connecting`, the endpoint returns
+ * the QR code currently held in memory and does not open a new connection.
+ */
+const QRCODE_REFRESH_INTERVAL_MS = 10_000;
+
 function DashboardInstance() {
   const { t, i18n } = useTranslation();
   const numberFormatter = new Intl.NumberFormat(i18n.language);
   const [qrCode, setQRCode] = useState<string | null>(null);
   const [pairingCode, setPairingCode] = useState("");
+  const [qrDialogOpen, setQrDialogOpen] = useState(false);
   const [goQrOpen, setGoQrOpen] = useState(false);
   const [goSendOpen, setGoSendOpen] = useState(false);
   const token = getToken(TOKEN_ID.TOKEN);
@@ -83,6 +97,22 @@ function DashboardInstance() {
       console.error("Error:", error);
     }
   };
+
+  // Keep the displayed QR code in sync with the one the server is serving.
+  useEffect(() => {
+    if (!qrDialogOpen || !instance) return;
+
+    const intervalId = setInterval(() => {
+      handleConnect(instance.name, false);
+    }, QRCODE_REFRESH_INTERVAL_MS);
+
+    return () => clearInterval(intervalId);
+  }, [qrDialogOpen, instance?.name]);
+
+  // Stop refreshing as soon as the instance is connected.
+  useEffect(() => {
+    if (instance?.connectionStatus === "open") setQrDialogOpen(false);
+  }, [instance?.connectionStatus]);
 
   const closeQRCodePopup = async () => {
     setQRCode(null);
@@ -185,7 +215,7 @@ function DashboardInstance() {
                   </>
                 ) : (
                   <div className="flex flex-wrap gap-2">
-                    <Dialog>
+                    <Dialog open={qrDialogOpen} onOpenChange={setQrDialogOpen}>
                       <DialogTrigger onClick={() => handleConnect(instance.name, false)} asChild>
                         <Button>
                           <QrCode className="mr-2 h-4 w-4" />
