@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { api } from "../api";
 import { UseQueryParams } from "../types";
+import { FindChatsApiChat, normalizeChat } from "./findChats";
 import { FindChatResponse } from "./types";
 
 interface IParams {
@@ -11,14 +12,14 @@ interface IParams {
 
 const queryKey = (params: Partial<IParams>) => ["chats", "findChats", JSON.stringify(params)];
 
-export const findChat = async ({ instanceName, remoteJid }: IParams) => {
-  const response = await api.post(`/chat/findChats/${instanceName}`, {
+export const findChat = async ({ instanceName, remoteJid }: IParams): Promise<FindChatResponse> => {
+  const response = await api.post<FindChatsApiChat[] | FindChatsApiChat>(`/chat/findChats/${instanceName}`, {
     where: { remoteJid },
   });
   if (Array.isArray(response.data)) {
-    return response.data[0];
+    return normalizeChat(response.data[0]);
   }
-  return response.data;
+  return normalizeChat(response.data);
 };
 
 export const useFindChat = (props: UseQueryParams<FindChatResponse> & Partial<IParams>) => {

@@ -12,6 +12,7 @@ import { useInstance } from "@/contexts/InstanceContext";
 import { useFindChats } from "@/lib/queries/chat/findChats";
 import { getToken, TOKEN_ID } from "@/lib/queries/token";
 import { cn } from "@/lib/utils";
+import { isContactJid, isGroupJid } from "@/lib/whatsapp/jid";
 
 import { connectSocket, disconnectSocket } from "@/services/websocket/socket";
 
@@ -114,8 +115,8 @@ function Chat() {
 
   const visibleChats = useMemo(() => {
     const isContacts = kind === "contacts";
-    const filtered = allChats.filter((c) =>
-      isContacts ? c.remoteJid.includes("@s.whatsapp.net") : c.remoteJid.includes("@g.us"),
+    const filtered = allChats.filter((chat) =>
+      isContacts ? isContactJid(chat.remoteJid) : isGroupJid(chat.remoteJid),
     );
     if (!search.trim()) return filtered;
     const q = search.toLowerCase();
