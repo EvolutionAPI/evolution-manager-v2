@@ -45,7 +45,8 @@
     "lint:check": "eslint ./src/**/*.{ts,tsx} --ext .ts,.tsx",
     "type-check": "tsc --noEmit",
     "preview": "vite preview",
-    "test": "echo \"No tests specified\" && exit 0",
+    "test": "npm run test:identity",
+    "test:identity": "tsc -p tests/tsconfig.json && node --test /tmp/evolution-manager-v2-identity-test/tests/chat-identity.test.js",
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,css,md}\""
   },

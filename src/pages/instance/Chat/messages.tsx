@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
+import { messageMatchesConversation } from "@/lib/chat/identity";
 import { useFindChat } from "@/lib/queries/chat/findChat";
 import { useFindMessages } from "@/lib/queries/chat/findMessages";
 import { useSendMessage, useSendMedia } from "@/lib/queries/chat/sendMessage";
@@ -460,7 +461,7 @@ function Messages({ textareaRef, handleTextareaChange, textareaHeight, lastMessa
         return;
       }
 
-      if (data?.data?.key?.remoteJid !== remoteJid) {
+      if (!messageMatchesConversation(data?.data?.key, remoteJid)) {
         return;
       }
 

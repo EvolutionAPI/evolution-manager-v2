@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "types": ["node"],
+    "rootDir": "..",
+    "outDir": "/tmp/evolution-manager-v2-identity-test",
+    "noEmitOnError": true
+  },
+  "files": ["../src/lib/chat/identity.ts", "./chat-identity.test.ts"]
+}
