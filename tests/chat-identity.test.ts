@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
-import { isDirectChatJid, mergeMessagesByKeyId, messageMatchesConversation, messageRecordsFromResponse } from "../src/lib/chat/identity";
+import { isDirectChatJid, mergeMessagesByKeyId, messageMatchesConversation, messageRecordsFromResponse } from "../src/lib/chat/identity.js";
 
 describe("isDirectChatJid", () => {
   it("detects phone direct chats", () => {
@@ -45,6 +45,19 @@ describe("messageMatchesConversation", () => {
         "123456789012345@lid",
       ),
       true,
+    );
+  });
+
+  it("rejects unrelated conversation identities", () => {
+    assert.equal(
+      messageMatchesConversation(
+        {
+          remoteJid: "15555550123@s.whatsapp.net",
+          remoteJidAlt: "15555550123@lid",
+        },
+        "5511999999999@s.whatsapp.net",
+      ),
+      false,
     );
   });
 });

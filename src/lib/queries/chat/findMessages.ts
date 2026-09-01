@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { mergeMessagesByKeyId, messageRecordsFromResponse } from "@/lib/chat/identity";
+import { isDirectChatJid, mergeMessagesByKeyId, messageMatchesConversation, messageRecordsFromResponse } from "@/lib/chat/identity";
 import { Message } from "@/types/evolution.types";
 
 import { api } from "../api";
@@ -21,12 +21,14 @@ export const findMessages = async ({ instanceName, remoteJid }: IParams): Promis
   const primaryRequest = api.post(url, {
     where: { key: { remoteJid } },
   });
-  const alternateRequest = api
-    .post(url, {
-      where: { key: { remoteJidAlt: remoteJid } },
-    })
-    .then((response) => messageRecordsFromResponse(response.data) as Message[])
-    .catch(() => [] as Message[]);
+  const alternateRequest = isDirectChatJid(remoteJid)
+    ? api
+        .post(url, {
+          where: { key: { remoteJidAlt: remoteJid } },
+        })
+        .then((response) => (messageRecordsFromResponse(response.data) as Message[]).filter((message) => messageMatchesConversation(message.key, remoteJid)))
+        .catch(() => [] as Message[])
+    : Promise.resolve([] as Message[]);
 
   const [primaryResponse, alternateRecords] = await Promise.all([primaryRequest, alternateRequest]);
   const primaryRecords = messageRecordsFromResponse(primaryResponse.data) as Message[];
