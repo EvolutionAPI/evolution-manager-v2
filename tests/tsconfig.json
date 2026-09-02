@@ -11,5 +11,5 @@
     "outDir": ".tmp/identity-test",
     "noEmitOnError": true
   },
-  "files": ["../src/lib/chat/identity.ts", "./chat-identity.test.ts"]
+  "files": ["../src/lib/chat/identity.ts", "../src/lib/chat/message-payload.ts", "./chat-identity.test.ts", "./chat-message-payload.test.ts"]
 }

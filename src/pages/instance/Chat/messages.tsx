@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useInstance } from "@/contexts/InstanceContext";
 
 import { messageMatchesConversation } from "@/lib/chat/identity";
+import { getChatMessagePayload, MISSING_CHAT_MESSAGE_FALLBACK } from "@/lib/chat/message-payload";
 import { useFindChat } from "@/lib/queries/chat/findChat";
 import { useFindMessages } from "@/lib/queries/chat/findMessages";
 import { useSendMessage, useSendMedia } from "@/lib/queries/chat/sendMessage";
@@ -113,14 +114,10 @@ const DateSeparator = ({ date }: { date: string }) => (
   </div>
 );
 
-const formatMessageTime = (date: Date, locale: string): string =>
-  date.toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" });
+const formatMessageTime = (date: Date, locale: string): string => date.toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" });
 
 // WhatsApp-like deterministic color palette per sender
-const SENDER_COLORS = [
-  "#e91e63", "#9c27b0", "#3f51b5", "#2196f3", "#00bcd4",
-  "#009688", "#4caf50", "#ff9800", "#f44336", "#795548",
-];
+const SENDER_COLORS = ["#e91e63", "#9c27b0", "#3f51b5", "#2196f3", "#00bcd4", "#009688", "#4caf50", "#ff9800", "#f44336", "#795548"];
 
 const getSenderColor = (key: string): string => {
   let hash = 0;
@@ -153,11 +150,16 @@ const getMessageText = (messageObj: any): string => {
 // Component to render different message types based on messageType
 const MessageContent = ({ message }: { message: Message }) => {
   const messageType = message.messageType as string;
+  const payload = getChatMessagePayload(message);
+
+  if (payload == null) {
+    return <span className="text-muted-foreground">{MISSING_CHAT_MESSAGE_FALLBACK}</span>;
+  }
 
   switch (messageType) {
     case "conversation":
-      if (message.message.contactMessage) {
-        const contactMsg = message.message.contactMessage;
+      if (payload.contactMessage) {
+        const contactMsg = payload.contactMessage;
         return (
           <div className="p-3 bg-muted rounded-lg max-w-xs">
             <div className="flex items-center gap-2 mb-2">
@@ -170,8 +172,8 @@ const MessageContent = ({ message }: { message: Message }) => {
         );
       }
 
-      if (message.message.locationMessage) {
-        const locationMsg = message.message.locationMessage;
+      if (payload.locationMessage) {
+        const locationMsg = payload.locationMessage;
         return (
           <div className="p-3 bg-muted rounded-lg max-w-xs">
             <div className="flex items-center gap-2 mb-2">
@@ -193,16 +195,16 @@ const MessageContent = ({ message }: { message: Message }) => {
         );
       }
 
-      return <span>{getMessageText(message.message)}</span>;
+      return <span>{getMessageText(payload)}</span>;
 
     case "extendedTextMessage":
-      return <span>{message.message.conversation ?? message.message.extendedTextMessage?.text}</span>;
+      return <span>{payload.conversation ?? payload.extendedTextMessage?.text}</span>;
 
     case "imageMessage":
       // Use base64 data or mediaUrl for images
-      const imageBase64 = message.message.base64 ? (message.message.base64.startsWith("data:") ? message.message.base64 : `data:image/jpeg;base64,${message.message.base64}`) : null;
+      const imageBase64 = payload.base64 ? (payload.base64.startsWith("data:") ? payload.base64 : `data:image/jpeg;base64,${payload.base64}`) : null;
 
-      const imageSrc = imageBase64 || message.message.mediaUrl;
+      const imageSrc = imageBase64 || payload.mediaUrl;
 
       return (
         <div className="flex flex-col gap-2">
@@ -224,15 +226,15 @@ const MessageContent = ({ message }: { message: Message }) => {
               <p className="text-center text-xs text-muted-foreground mt-1">Missing base64 data and mediaUrl</p>
             </div>
           )}
-          {message.message.imageMessage?.caption && <p className="text-sm">{message.message.imageMessage.caption}</p>}
+          {payload.imageMessage?.caption && <p className="text-sm">{payload.imageMessage.caption}</p>}
         </div>
       );
 
     case "videoMessage":
       // Use base64 data or mediaUrl for videos
-      const videoBase64 = message.message.base64 ? (message.message.base64.startsWith("data:") ? message.message.base64 : `data:video/mp4;base64,${message.message.base64}`) : null;
+      const videoBase64 = payload.base64 ? (payload.base64.startsWith("data:") ? payload.base64 : `data:video/mp4;base64,${payload.base64}`) : null;
 
-      const videoSrc = videoBase64 || message.message.mediaUrl;
+      const videoSrc = videoBase64 || payload.mediaUrl;
 
       return (
         <div className="flex flex-col gap-2">
@@ -252,15 +254,15 @@ const MessageContent = ({ message }: { message: Message }) => {
               <p className="text-center text-xs text-muted-foreground mt-1">Missing base64 data and mediaUrl</p>
             </div>
           )}
-          {message.message.videoMessage?.caption && <p className="text-sm">{message.message.videoMessage.caption}</p>}
+          {payload.videoMessage?.caption && <p className="text-sm">{payload.videoMessage.caption}</p>}
         </div>
       );
 
     case "audioMessage":
       // Use base64 data or mediaUrl for audio
-      const audioBase64 = message.message.base64 ? (message.message.base64.startsWith("data:") ? message.message.base64 : `data:audio/mpeg;base64,${message.message.base64}`) : null;
+      const audioBase64 = payload.base64 ? (payload.base64.startsWith("data:") ? payload.base64 : `data:audio/mpeg;base64,${payload.base64}`) : null;
 
-      const audioSrc = audioBase64 || message.message.mediaUrl;
+      const audioSrc = audioBase64 || payload.mediaUrl;
 
       return audioSrc ? (
         <audio controls className="w-full max-w-xs">
@@ -279,14 +281,14 @@ const MessageContent = ({ message }: { message: Message }) => {
         <div className="flex items-center gap-2 p-3 bg-muted rounded-lg max-w-xs">
           <div className="text-2xl">📄</div>
           <div className="flex-1 min-w-0">
-            <p className="font-medium truncate">{message.message.documentMessage?.fileName || "Document"}</p>
-            {message.message.documentMessage?.fileLength && <p className="text-xs text-muted-foreground">{(message.message.documentMessage.fileLength / 1024 / 1024).toFixed(2)} MB</p>}
+            <p className="font-medium truncate">{payload.documentMessage?.fileName || "Document"}</p>
+            {payload.documentMessage?.fileLength && <p className="text-xs text-muted-foreground">{(payload.documentMessage.fileLength / 1024 / 1024).toFixed(2)} MB</p>}
           </div>
         </div>
       );
 
     case "stickerMessage":
-      return <img src={message.message.mediaUrl} alt="Sticker" className="max-w-32 max-h-32 object-contain" />;
+      return <img src={payload.mediaUrl} alt="Sticker" className="max-w-32 max-h-32 object-contain" />;
 
     default:
       // Fallback for unknown message types
@@ -294,7 +296,7 @@ const MessageContent = ({ message }: { message: Message }) => {
         <div className="text-xs text-muted-foreground bg-muted p-2 rounded max-w-xs">
           <details>
             <summary>Unknown message type: {messageType}</summary>
-            <pre className="mt-2 whitespace-pre-wrap break-all text-xs">{JSON.stringify(message.message, null, 2)}</pre>
+            <pre className="mt-2 whitespace-pre-wrap break-all text-xs">{JSON.stringify(payload, null, 2)}</pre>
           </details>
         </div>
       );
@@ -582,9 +584,7 @@ function Messages({ textareaRef, handleTextareaChange, textareaHeight, lastMessa
         <div className="rounded-lg bg-primary px-3 py-2 text-sm text-primary-foreground">
           <MessageContent message={message} />
         </div>
-        <span className="mt-0.5 block px-1 text-right text-[11px] text-muted-foreground">
-          {formatMessageTime(getMessageTimestamp(message), locale)}
-        </span>
+        <span className="mt-0.5 block px-1 text-right text-[11px] text-muted-foreground">{formatMessageTime(getMessageTimestamp(message), locale)}</span>
       </div>
     </div>
   );
@@ -606,9 +606,7 @@ function Messages({ textareaRef, handleTextareaChange, textareaHeight, lastMessa
           <div className="rounded-lg border bg-muted px-3 py-2 text-sm text-foreground">
             <MessageContent message={message} />
           </div>
-          <span className="mt-0.5 block px-1 text-[11px] text-muted-foreground">
-            {formatMessageTime(getMessageTimestamp(message), locale)}
-          </span>
+          <span className="mt-0.5 block px-1 text-[11px] text-muted-foreground">{formatMessageTime(getMessageTimestamp(message), locale)}</span>
         </div>
       </div>
     );
@@ -637,9 +635,7 @@ function Messages({ textareaRef, handleTextareaChange, textareaHeight, lastMessa
         {groupedMessages.map((group, groupIndex) => (
           <div key={groupIndex}>
             <DateSeparator date={group.date} />
-            {group.messages.map((message) =>
-              message.key.fromMe ? renderBubbleRight(message) : renderBubbleLeft(message),
-            )}
+            {group.messages.map((message) => (message.key.fromMe ? renderBubbleRight(message) : renderBubbleLeft(message)))}
           </div>
         ))}
         <div ref={lastMessageRef as never} />
@@ -652,9 +648,7 @@ function Messages({ textareaRef, handleTextareaChange, textareaHeight, lastMessa
             </div>
           )}
           <div className="flex items-center gap-2 px-2 py-1.5">
-            <div className="flex flex-shrink-0 items-center">
-              {instance && <MediaOptions instance={instance} setSelectedMedia={setSelectedMedia} />}
-            </div>
+            <div className="flex flex-shrink-0 items-center">{instance && <MediaOptions instance={instance} setSelectedMedia={setSelectedMedia} />}</div>
             <Textarea
               placeholder={t("chat.input.placeholder", { defaultValue: "Digite uma mensagem..." })}
               name="message"
@@ -673,8 +667,7 @@ function Messages({ textareaRef, handleTextareaChange, textareaHeight, lastMessa
               size="icon"
               onClick={sendMessage}
               disabled={(!messageText.trim() && !selectedMedia) || isSending}
-              className="h-9 w-9 flex-shrink-0 bg-primary text-primary-foreground hover:bg-primary/85 disabled:bg-muted disabled:text-muted-foreground disabled:opacity-50"
-            >
+              className="h-9 w-9 flex-shrink-0 bg-primary text-primary-foreground hover:bg-primary/85 disabled:bg-muted disabled:text-muted-foreground disabled:opacity-50">
               <Send className="h-4 w-4" />
               <span className="sr-only">{t("chat.input.send")}</span>
             </Button>
