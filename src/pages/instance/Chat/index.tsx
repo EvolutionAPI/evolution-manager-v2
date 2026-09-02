@@ -9,6 +9,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
+import { isDirectChatJid } from "@/lib/chat/identity";
 import { useFindChats } from "@/lib/queries/chat/findChats";
 import { getToken, TOKEN_ID } from "@/lib/queries/token";
 import { cn } from "@/lib/utils";
@@ -115,7 +116,7 @@ function Chat() {
   const visibleChats = useMemo(() => {
     const isContacts = kind === "contacts";
     const filtered = allChats.filter((c) =>
-      isContacts ? c.remoteJid.includes("@s.whatsapp.net") : c.remoteJid.includes("@g.us"),
+      isContacts ? isDirectChatJid(c.remoteJid) : c.remoteJid.includes("@g.us"),
     );
     if (!search.trim()) return filtered;
     const q = search.toLowerCase();

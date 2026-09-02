@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "types": ["node"],
+    "rootDir": "..",
+    "outDir": ".tmp/identity-test",
+    "noEmitOnError": true
+  },
+  "files": ["../src/lib/chat/identity.ts", "../src/lib/chat/message-payload.ts", "./chat-identity.test.ts", "./chat-message-payload.test.ts"]
+}
